@@ -1,4 +1,5 @@
 FROM pgallina/debian-test as debian-test
+ADD ./dist ./dist
 ARG INTEGRATION=nri-apache
 ARG TAG=0.0.1
 ARG TEST_EXISTENCE=""
@@ -8,6 +9,7 @@ RUN ls $TEST_EXISTENCE
 RUN /var/db/newrelic-infra/newrelic-integrations/bin/${INTEGRATION} -show_version | grep ${TAG}
 
 FROM pgallina/centos-test as centos-test
+ADD ./dist ./dist
 ARG INTEGRATION=nri-apache
 ARG TAG=0.0.1
 ARG TEST_EXISTENCE=""

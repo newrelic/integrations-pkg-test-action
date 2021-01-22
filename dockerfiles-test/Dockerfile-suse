@@ -1,4 +1,5 @@
 FROM pgallina/centos-test as centos-test-update
+ADD ./dist ./dist
 ARG INTEGRATION=nri-apache
 ARG TAG=0.0.1
 ARG TEST_EXISTENCE=""
@@ -10,6 +11,7 @@ RUN /var/db/newrelic-infra/newrelic-integrations/bin/${INTEGRATION} -show_versio
 
 
 FROM pgallina/suse-test as suse-test-update
+ADD ./dist ./dist
 ARG INTEGRATION=nri-apache
 ARG TAG=0.0.1
 ARG TEST_EXISTENCE=""
