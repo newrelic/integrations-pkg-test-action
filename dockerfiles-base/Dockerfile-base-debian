@@ -1,0 +1,14 @@
+FROM ubuntu:bionic as debian-test
+
+# Installing needed tools
+RUN apt update
+RUN apt -y install wget gnupg
+
+# Installing Agent
+RUN wget https://download.newrelic.com/infrastructure_agent/linux/apt/pool/main/n/newrelic-infra/newrelic-infra_upstart_1.14.2_upstart_amd64.deb
+RUN apt install ./newrelic-infra_upstart_1.14.2_upstart_amd64.deb
+
+# Adding Newrelic repository
+RUN wget https://download.newrelic.com/infrastructure_agent/gpg/newrelic-infra.gpg -O - | apt-key add -
+RUN echo "deb [arch=amd64] https://download.newrelic.com/infrastructure_agent/linux/apt focal main" > /etc/apt/sources.list.d/newrelic-infra.list
+RUN apt update

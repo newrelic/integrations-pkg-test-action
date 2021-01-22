@@ -1,0 +1,17 @@
+name: 'Test packages installation'
+description: 'This action test packages installation in Suse Centos Debian'
+inputs:
+  TAG: Tag of the integration to test
+  INTEGRATION: Integration to test
+outputs:
+  random-number: 
+    description: "Random number"
+    value: ${{ steps.random-number-generator.outputs.random-id }}
+runs:
+  using: "composite"
+  steps: 
+    - run: |
+        docker build -f dockerfiles-test/Dockerfile-suse .
+        docker build -f dockerfiles-test/Dockerfile-cendos .
+        docker build -f dockerfiles-test/Dockerfile-debian .
+      shell: bash

@@ -1,0 +1,15 @@
+FROM pgallina/debian-test as debian-test
+ARG INTEGRATION=nri-apache
+ARG TAG=0.0.1
+RUN echo "debian-test for ${INTEGRATION} ${TAG}"
+RUN wget https://github.com/newrelic/${INTEGRATION}/releases/download/v${TAG}/${INTEGRATION}_${TAG}-1_amd64.deb
+RUN apt install -y ./${INTEGRATION}_${TAG}-1_amd64.deb
+RUN /var/db/newrelic-infra/newrelic-integrations/bin/${INTEGRATION} -show_version | grep ${TAG}
+
+FROM pgallina/centos-test as centos-test
+ARG INTEGRATION=nri-apache
+ARG TAG=0.0.1
+RUN echo "centos-test-test for ${INTEGRATION} ${TAG}"
+RUN wget https://github.com/newrelic/${INTEGRATION}/releases/download/v${TAG}/${INTEGRATION}-${TAG}-1.x86_64.rpm
+RUN yum -y install ./${INTEGRATION}-${TAG}-1.x86_64.rpm
+RUN /var/db/newrelic-infra/newrelic-integrations/bin/${INTEGRATION} -show_version | grep ${TAG}

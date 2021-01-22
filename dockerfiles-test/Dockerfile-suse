@@ -1,0 +1,18 @@
+FROM pgallina/centos-test as centos-test-update
+ARG INTEGRATION=nri-apache
+ARG TAG=0.0.1
+RUN echo "centos-test-update for ${INTEGRATION} ${TAG}"
+RUN wget https://github.com/newrelic/${INTEGRATION}/releases/download/v${TAG}/${INTEGRATION}-${TAG}-1.x86_64.rpm
+RUN yum -y install ${INTEGRATION}
+RUN yum -y install ./${INTEGRATION}-${TAG}-1.x86_64.rpm
+RUN /var/db/newrelic-infra/newrelic-integrations/bin/${INTEGRATION} -show_version | grep ${TAG}
+
+
+FROM pgallina/suse-test as suse-test-update
+ARG INTEGRATION=nri-apache
+ARG TAG=0.0.1
+RUN echo "suse-test-update for ${INTEGRATION} ${TAG}"
+RUN wget https://github.com/newrelic/${INTEGRATION}/releases/download/v${TAG}/${INTEGRATION}-${TAG}-1.x86_64.rpm
+RUN zypper -n install ${INTEGRATION}
+RUN zypper -n install -f ./${INTEGRATION}-${TAG}-1.x86_64.rpm
+RUN /var/db/newrelic-infra/newrelic-integrations/bin/${INTEGRATION} -show_version | grep ${TAG}
