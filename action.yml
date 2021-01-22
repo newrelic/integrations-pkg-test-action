@@ -9,6 +9,10 @@ inputs:
     description: 'Integration to test'
     required: true
     default: 'nri-test'
+  TEST_EXISTENCE:
+    description: 'file to test es "/var /bin/nri-test"'
+    required: false
+    default: ''
 outputs:
   random-number: 
     description: "Random number"
@@ -17,7 +21,7 @@ runs:
   using: "composite"
   steps: 
     - run: |
-        docker build -f dockerfiles-test/Dockerfile-suse .
-        docker build -f dockerfiles-test/Dockerfile-cendos .
-        docker build -f dockerfiles-test/Dockerfile-debian .
+        docker build -f dockerfiles-test/Dockerfile-suse   . --build-arg TAG=${{ inputs.TAG }} INTEGRATION=${{ inputs.INTEGRATION }} TEST_EXISTENCE=${{ inputs.TEST_EXISTENCE }}
+        docker build -f dockerfiles-test/Dockerfile-centos . --build-arg TAG=${{ inputs.TAG }} INTEGRATION=${{ inputs.INTEGRATION }} TEST_EXISTENCE=${{ inputs.TEST_EXISTENCE }}
+        docker build -f dockerfiles-test/Dockerfile-debian . --build-arg TAG=${{ inputs.TAG }} INTEGRATION=${{ inputs.INTEGRATION }} TEST_EXISTENCE=${{ inputs.TEST_EXISTENCE }}
       shell: bash
