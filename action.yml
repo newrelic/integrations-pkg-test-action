@@ -1,8 +1,8 @@
 name: 'Test packages installation'
 description: 'This action test packages installation in Suse Centos Debian'
 inputs:
-  TAG: Tag of the integration to test
-  INTEGRATION: Integration to test
+  TAG: 'Tag of the integration to test'
+  INTEGRATION: 'Integration to test'
 outputs:
   random-number: 
     description: "Random number"
