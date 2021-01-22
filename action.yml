@@ -19,5 +19,5 @@ runs:
     - run: |
         docker build -f $GITHUB_ACTION_PATH/dockerfiles-test/Dockerfile-suse    --build-arg TAG="${{ inputs.TAG }}" --build-arg INTEGRATION="${{ inputs.INTEGRATION }}" --build-arg TEST_EXISTENCE="${{ inputs.TEST_EXISTENCE }}" .
         docker build -f $GITHUB_ACTION_PATH/dockerfiles-test/Dockerfile-centos  --build-arg TAG="${{ inputs.TAG }}" --build-arg INTEGRATION="${{ inputs.INTEGRATION }}" --build-arg TEST_EXISTENCE="${{ inputs.TEST_EXISTENCE }}" .
-        docker build -f $GITHUB_ACTION_PATH/ddockerfiles-test/Dockerfile-debian  --build-arg TAG="${{ inputs.TAG }}" --build-arg INTEGRATION="${{ inputs.INTEGRATION }}" --build-arg TEST_EXISTENCE="${{ inputs.TEST_EXISTENCE }}" .
+        docker build -f $GITHUB_ACTION_PATH/dockerfiles-test/Dockerfile-debian  --build-arg TAG="${{ inputs.TAG }}" --build-arg INTEGRATION="${{ inputs.INTEGRATION }}" --build-arg TEST_EXISTENCE="${{ inputs.TEST_EXISTENCE }}" .
       shell: bash
