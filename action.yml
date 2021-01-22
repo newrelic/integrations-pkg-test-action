@@ -21,7 +21,7 @@ runs:
   using: "composite"
   steps: 
     - run: |
-        docker build -f dockerfiles-test/Dockerfile-suse   . --build-arg TAG=${{ inputs.TAG }} --build-arg INTEGRATION=${{ inputs.INTEGRATION }} --build-arg TEST_EXISTENCE=${{ inputs.TEST_EXISTENCE }}
-        docker build -f dockerfiles-test/Dockerfile-centos . --build-arg TAG=${{ inputs.TAG }} --build-arg INTEGRATION=${{ inputs.INTEGRATION }} --build-arg TEST_EXISTENCE=${{ inputs.TEST_EXISTENCE }}
-        docker build -f dockerfiles-test/Dockerfile-debian . --build-arg TAG=${{ inputs.TAG }} --build-arg INTEGRATION=${{ inputs.INTEGRATION }} --build-arg TEST_EXISTENCE=${{ inputs.TEST_EXISTENCE }}
+        docker build -f dockerfiles-test/Dockerfile-suse    --build-arg TAG=${{ inputs.TAG }} --build-arg INTEGRATION=${{ inputs.INTEGRATION }} --build-arg TEST_EXISTENCE=${{ inputs.TEST_EXISTENCE }} .
+        docker build -f dockerfiles-test/Dockerfile-centos  --build-arg TAG=${{ inputs.TAG }} --build-arg INTEGRATION=${{ inputs.INTEGRATION }} --build-arg TEST_EXISTENCE=${{ inputs.TEST_EXISTENCE }} .
+        docker build -f dockerfiles-test/Dockerfile-debian  --build-arg TAG=${{ inputs.TAG }} --build-arg INTEGRATION=${{ inputs.INTEGRATION }} --build-arg TEST_EXISTENCE=${{ inputs.TEST_EXISTENCE }} .
       shell: bash
