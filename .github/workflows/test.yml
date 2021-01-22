@@ -10,4 +10,4 @@ jobs:
       with:
         TAG: '0.0.1'
         INTEGRATION: 'nri-apache'
-        TEST_EXISTENCE: '/var/db/newrelic-infra/newrelic-integrations/bin/nri-apache /etc/newrelic-infra/integrations.d/nri-apache-config.yml.sample /var/db/newrelic-infra/newrelic-integrations/nri-apache-definition.yml'
+        TEST_EXISTENCE: '/var/db/newrelic-infra/newrelic-integrations/bin/nri-apache /etc/newrelic-infra/integrations.d/apache-config.yml.sample /var/db/newrelic-infra/newrelic-integrations/apache-definition.yml'
