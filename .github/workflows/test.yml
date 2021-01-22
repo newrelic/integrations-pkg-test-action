@@ -8,5 +8,5 @@ jobs:
     - uses: actions/checkout@v2
     - uses: ./
       with:
-        TAG: 0.0.1
-        INTEGRATION: nri-apache
+        TAG: '0.0.1'
+        INTEGRATION: 'nri-apache'
