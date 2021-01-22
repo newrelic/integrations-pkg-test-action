@@ -1,8 +1,14 @@
 name: 'Test packages installation'
 description: 'This action test packages installation in Suse Centos Debian'
 inputs:
-  TAG: 'Tag of the integration to test'
-  INTEGRATION: 'Integration to test'
+  TAG: 
+    description: 'Tag of the integration to test'
+    required: true
+    default: '0.0.0'
+  INTEGRATION: 
+    description: 'Integration to test'
+    required: true
+    default: 'nri-test'
 outputs:
   random-number: 
     description: "Random number"
