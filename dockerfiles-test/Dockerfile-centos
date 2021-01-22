@@ -3,8 +3,7 @@ ARG INTEGRATION=nri-apache
 ARG TAG=0.0.1
 ARG TEST_EXISTENCE=""
 RUN echo "suse-test-test for ${INTEGRATION} ${TAG}"
-RUN wget https://github.com/newrelic/${INTEGRATION}/releases/download/v${TAG}/${INTEGRATION}-${TAG}-1.x86_64.rpm
-RUN zypper -n install ./${INTEGRATION}-${TAG}-1.x86_64.rpm
+RUN zypper -n install ./dist/${INTEGRATION}-${TAG}-1.x86_64.rpm
 RUN ls $TEST_EXISTENCE
 RUN /var/db/newrelic-infra/newrelic-integrations/bin/${INTEGRATION} -show_version | grep ${TAG}
 
@@ -14,8 +13,7 @@ ARG INTEGRATION=nri-apache
 ARG TAG=0.0.1
 ARG TEST_EXISTENCE=""
 RUN echo "debian-test-update for ${INTEGRATION} ${TAG}"
-RUN wget https://github.com/newrelic/${INTEGRATION}/releases/download/v${TAG}/${INTEGRATION}_${TAG}-1_amd64.deb
 RUN apt install -y ${INTEGRATION}
-RUN apt install -y --allow-downgrades ./${INTEGRATION}_${TAG}-1_amd64.deb
+RUN apt install -y --allow-downgrades ./dist/${INTEGRATION}_${TAG}-1_amd64.deb
 RUN ls $TEST_EXISTENCE
 RUN /var/db/newrelic-infra/newrelic-integrations/bin/${INTEGRATION} -show_version | grep ${TAG}
