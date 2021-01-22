@@ -6,6 +6,11 @@ jobs:
     name: A job to test created packages
     steps:
     - uses: actions/checkout@v2
+    - name: Simulating Build
+      run: |
+        mkdir ./dist
+        wget https://github.com/newrelic/nri-apache/releases/download/v0.0.1/nri-apache-0.0.1-1.x86_64.rpm -O ./dist/nri-apache-0.0.1-1.x86_64.rpm
+        wget https://github.com/newrelic/nri-apache/releases/download/v0.0.1/nri-apache_0.0.1-1_amd64.deb -O ./dist/nri-apache_0.0.1-1_amd64.deb
     - uses: ./
       with:
         TAG: '0.0.1'
