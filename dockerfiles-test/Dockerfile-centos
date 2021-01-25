@@ -1,21 +1,15 @@
-FROM pgallina/suse-test as suse-test
-ADD ./dist ./dist
+FROM pgallina/centos-test as centos-test
+
 ARG INTEGRATION=nri-apache
 ARG TAG=0.0.1
 ARG TEST_EXISTENCE=""
-RUN echo "suse-test-test for ${INTEGRATION} ${TAG}"
-RUN zypper -n install ./dist/${INTEGRATION}-${TAG}-1.x86_64.rpm
-RUN ls $TEST_EXISTENCE
-RUN /var/db/newrelic-infra/newrelic-integrations/bin/${INTEGRATION} -show_version | grep ${TAG}
+ARG TEST_UPDATE=false
 
-
-FROM pgallina/debian-test as debian-test-update
 ADD ./dist ./dist
-ARG INTEGRATION=nri-apache
-ARG TAG=0.0.1
-ARG TEST_EXISTENCE=""
-RUN echo "debian-test-update for ${INTEGRATION} ${TAG}"
-RUN apt install -y ${INTEGRATION}
-RUN apt install -y --allow-downgrades ./dist/${INTEGRATION}_${TAG}-1_amd64.deb
+
+RUN echo "centos-test-test for ${INTEGRATION} ${TAG}"
+RUN if [[ "${TEST_UPDATE}" = true ]] ; then yum -y install ${INTEGRATION} ; fi
+RUN yum -y install ./dist/${INTEGRATION}-${TAG}-1.x86_64.rpm
+
 RUN ls $TEST_EXISTENCE
 RUN /var/db/newrelic-infra/newrelic-integrations/bin/${INTEGRATION} -show_version | grep ${TAG}

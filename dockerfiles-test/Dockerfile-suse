@@ -1,22 +1,15 @@
-FROM pgallina/centos-test as centos-test-update
-ADD ./dist ./dist
+FROM pgallina/suse-test as suse-test
+
 ARG INTEGRATION=nri-apache
 ARG TAG=0.0.1
 ARG TEST_EXISTENCE=""
-RUN echo "centos-test-update for ${INTEGRATION} ${TAG}"
-RUN yum -y install ${INTEGRATION}
-RUN yum -y install ./dist/${INTEGRATION}-${TAG}-1.x86_64.rpm
-RUN ls $TEST_EXISTENCE
-RUN /var/db/newrelic-infra/newrelic-integrations/bin/${INTEGRATION} -show_version | grep ${TAG}
+ARG TEST_UPDATE=false
 
-
-FROM pgallina/suse-test as suse-test-update
 ADD ./dist ./dist
-ARG INTEGRATION=nri-apache
-ARG TAG=0.0.1
-ARG TEST_EXISTENCE=""
-RUN echo "suse-test-update for ${INTEGRATION} ${TAG}"
-RUN zypper -n install ${INTEGRATION}
-RUN zypper -n install -f ./dist/${INTEGRATION}-${TAG}-1.x86_64.rpm
+
+RUN echo "suse-test-test for ${INTEGRATION} ${TAG}"
+RUN if [[ "${TEST_UPDATE}" = true ]] ; then zypper -n install ${INTEGRATION} ; fi
+RUN zypper -n install ./dist/${INTEGRATION}-${TAG}-1.x86_64.rpm
+
 RUN ls $TEST_EXISTENCE
 RUN /var/db/newrelic-infra/newrelic-integrations/bin/${INTEGRATION} -show_version | grep ${TAG}

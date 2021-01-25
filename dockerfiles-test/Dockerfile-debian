@@ -1,19 +1,15 @@
 FROM pgallina/debian-test as debian-test
-ADD ./dist ./dist
-ARG INTEGRATION=nri-apache
-ARG TAG=0.0.1
-ARG TEST_EXISTENCE=""
-RUN echo "debian-test for ${INTEGRATION} ${TAG}"
-RUN apt install -y ./dist/${INTEGRATION}_${TAG}-1_amd64.deb
-RUN ls $TEST_EXISTENCE
-RUN /var/db/newrelic-infra/newrelic-integrations/bin/${INTEGRATION} -show_version | grep ${TAG}
 
-FROM pgallina/centos-test as centos-test
-ADD ./dist ./dist
 ARG INTEGRATION=nri-apache
 ARG TAG=0.0.1
 ARG TEST_EXISTENCE=""
-RUN echo "centos-test-test for ${INTEGRATION} ${TAG}"
-RUN yum -y install ./dist/${INTEGRATION}-${TAG}-1.x86_64.rpm
+ARG TEST_UPDATE=false
+
+ADD ./dist ./dist
+
+RUN echo "debian-test for ${INTEGRATION} ${TAG}"
+RUN if [[ "${TEST_UPDATE}" = true ]] ; then apt install -y ${INTEGRATION} ; fi
+RUN apt install -y ./dist/${INTEGRATION}_${TAG}-1_amd64.deb
+
 RUN ls $TEST_EXISTENCE
 RUN /var/db/newrelic-infra/newrelic-integrations/bin/${INTEGRATION} -show_version | grep ${TAG}
