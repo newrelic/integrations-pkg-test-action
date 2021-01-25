@@ -1,4 +1,4 @@
-FROM opensuse/tumbleweed as suste-test
+FROM opensuse/tumbleweed
 
 # Installing needed tools
 RUN zypper -n install wget gnupg curl

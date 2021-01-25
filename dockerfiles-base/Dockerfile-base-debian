@@ -1,4 +1,4 @@
-FROM ubuntu:focal as debian-test
+FROM ubuntu:focal
 
 # Installing needed tools
 RUN apt update && \

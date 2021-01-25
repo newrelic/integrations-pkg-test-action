@@ -1,4 +1,4 @@
-FROM centos:centos8 as centos-test
+FROM centos:centos8
 
 # Installing needed tools
 RUN yum update -y && \

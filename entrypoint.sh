@@ -1,44 +1,47 @@
-#!/bin/bash
-n=0
+#!/usr/bin/env bash
+set -eo
 
-docker build -f $GITHUB_ACTION_PATH/dockerfiles-test/Dockerfile-suse    --build-arg TAG="${TAG}" --build-arg INTEGRATION="${INTEGRATION}" --build-arg TEST_EXISTENCE="${TEST_EXISTENCE}" .
-if [[ $? -ne 0 ]] ; then
-    echo "suse tests failed"
-    ((n+=1))
+errors=0
+
+if [[ -z $POST_INSTALL ]]; then
+    POST_INSTALL="
+    test -e /var/db/newrelic-infra/newrelic-integrations/bin/${INTEGRATION}
+    /var/db/newrelic-infra/newrelic-integrations/bin/${INTEGRATION} -show_version | grep -e "$TAG"
+    "
 fi
 
-docker build -f $GITHUB_ACTION_PATH/dockerfiles-test/Dockerfile-suse    --build-arg TAG="${TAG}" --build-arg INTEGRATION="${INTEGRATION}" --build-arg TEST_EXISTENCE="${TEST_EXISTENCE}" --build-arg TEST_UPDATE=true .
-if [[ $? -ne 0 ]] ; then
-    echo "suse update tests failed"
-    ((n+=1))
-fi
+function build_and_test() {
+    if ! docker build -t "$INTEGRATION:$distro-$TAG" -f $GITHUB_ACTION_PATH/dockerfiles-test/Dockerfile-$distro --build-arg TAG="${TAG}" --build-arg INTEGRATION="${INTEGRATION}" --build-arg UPGRADE=$1 .; then
+        echo "Clean install failed on $distro" 1>&2
+        return 1
+    fi
+    echo "Installation succeeded install done"
 
-docker build -f $GITHUB_ACTION_PATH/dockerfiles-test/Dockerfile-centos  --build-arg TAG="${TAG}" --build-arg INTEGRATION="${INTEGRATION}" --build-arg TEST_EXISTENCE="${TEST_EXISTENCE}" .
-if [[ $? -ne 0 ]] ; then
-    echo "centos tests failed"
-    ((n+=1))
-fi
+    echo "Running post-installation checks"
+    echo "$POST_INSTALL" | while read check; do
+      if ! echo "$check" | docker run --rm -i $INTEGRATION:$distro-$TAG; then
+        echo "$check"
+        echo Failed for $INTEGRATION:$distro-$TAG
+        return 1
+      fi
+    done
+}
 
-docker build -f $GITHUB_ACTION_PATH/dockerfiles-test/Dockerfile-centos  --build-arg TAG="${TAG}" --build-arg INTEGRATION="${INTEGRATION}" --build-arg TEST_EXISTENCE="${TEST_EXISTENCE}" --build-arg TEST_UPDATE=true .
-if [[ $? -ne 0 ]] ; then
-    echo "centos update tests failed"
-    ((n+=1))
-fi
+for distro in centos debian suse; do
+    echo "Building base image for $distro..."
+    docker build -t "$distro-test" -f $GITHUB_ACTION_PATH/dockerfiles-base/Dockerfile-base-$distro .
 
-docker build -f $GITHUB_ACTION_PATH/dockerfiles-test/Dockerfile-debian  --build-arg TAG="${TAG}" --build-arg INTEGRATION="${INTEGRATION}" --build-arg TEST_EXISTENCE="${TEST_EXISTENCE}" .
-if [[ $? -ne 0 ]] ; then
-    echo "debian tests failed"
-    ((n+=1))
-fi
+    echo "Testing clean install"
+    build_and_test false
+    ((errors += $? ))
 
-docker build -f $GITHUB_ACTION_PATH/dockerfiles-test/Dockerfile-debian  --build-arg TAG="${TAG}" --build-arg INTEGRATION="${INTEGRATION}" --build-arg TEST_EXISTENCE="${TEST_EXISTENCE}" --build-arg TEST_UPDATE=true .
-if [[ $? -ne 0 ]] ; then
-    echo "debian update tests failed"
-    ((n+=1))
-fi
+    if [[ $UPGRADE == "true" ]]; then
+        echo "Testing upgrade path"
+        build_and_test true
+        ((errors += $? ))
+    else
+        echo "Skipping upgrade path"
+    fi
+done
 
-if [ $n -gt 0 ];
-then
-    echo $n "tests failed"
-    exit 1
-fi
+exit $errors
