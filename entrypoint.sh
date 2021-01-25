@@ -37,16 +37,19 @@ function build_and_test() {
 }
 
 echo "$DISTROS" | tr " " "\n" | while read -r distro; do
-    echo "ℹ️ Building base image for $distro..."
+    echo "::group::Build base image for $distro"
     docker build -t "$distro-base" -f "$GITHUB_ACTION_PATH/dockerfiles-base/Dockerfile-base-$distro" .
+    echo "::endgroup::"
 
-    echo "ℹ️ Testing clean install"
+    echo "::group::Clean install on $distro"
     build_and_test false
+    echo "::endgroup::"
 
     if [[ "$UPGRADE" = "true" ]]; then
-        echo "ℹ️ Testing upgrade path"
+        echo "::group::Upgrade path on $distro"
         build_and_test true
+        echo "::endgroup::"
     else
-        echo "ℹ️ Skipping upgrade path"
+        echo "ℹ️ Skipping upgrade path on $distro"
     fi
 done
