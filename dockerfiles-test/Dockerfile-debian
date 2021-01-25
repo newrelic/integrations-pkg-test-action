@@ -1,4 +1,4 @@
-FROM debian-test
+FROM debian-base
 
 ARG INTEGRATION=nri-apache
 ARG TAG=0.0.1

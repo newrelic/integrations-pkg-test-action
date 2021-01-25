@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+
 set -o errexit
 set -o pipefail
 
@@ -15,7 +16,7 @@ function build_and_test() {
     if [[ $1 = "true" ]]; then upgradesuffix="-upgrade"; fi
     dockertag="$INTEGRATION:$distro-$TAG$upgradesuffix"
 
-    if ! docker build -t "$dockertag" -f $GITHUB_ACTION_PATH/dockerfiles-test/Dockerfile-$distro --build-arg TAG="${TAG}" --build-arg INTEGRATION="${INTEGRATION}" --build-arg UPGRADE=$1 .; then
+    if ! docker build -t "$dockertag" -f "$GITHUB_ACTION_PATH/dockerfiles-test/Dockerfile-$distro" --build-arg TAG="${TAG}" --build-arg INTEGRATION="${INTEGRATION}" --build-arg UPGRADE=$1 .; then
         echo "❌ Clean install failed on $distro" 1>&2
         return 1
     fi
@@ -35,7 +36,7 @@ function build_and_test() {
 
 for distro in centos debian suse; do
     echo "ℹ️ Building base image for $distro..."
-    docker build -t "$distro-test" -f $GITHUB_ACTION_PATH/dockerfiles-base/Dockerfile-base-$distro .
+    docker build -t "$distro-base" -f "$GITHUB_ACTION_PATH/dockerfiles-base/Dockerfile-base-$distro" .
 
     echo "ℹ️ Testing clean install"
     build_and_test false
