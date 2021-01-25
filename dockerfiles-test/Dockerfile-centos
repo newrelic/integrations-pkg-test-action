@@ -1,15 +1,11 @@
-FROM pgallina/centos-test as centos-test
+FROM centos-base
 
-ARG INTEGRATION=nri-apache
-ARG TAG=0.0.1
-ARG TEST_EXISTENCE=""
-ARG TEST_UPDATE=false
+ARG INTEGRATION
+ARG TAG
+ARG PKGDIR
+ARG UPGRADE=false
 
-ADD ./dist ./dist
+ADD ${PKGDIR} ./dist
 
-RUN echo "centos-test-test for ${INTEGRATION} ${TAG}"
-RUN if [[ "${TEST_UPDATE}" = true ]] ; then yum -y install ${INTEGRATION} ; fi
-RUN yum -y install ./dist/${INTEGRATION}-${TAG}-1.x86_64.rpm
-
-RUN ls $TEST_EXISTENCE
-RUN /var/db/newrelic-infra/newrelic-integrations/bin/${INTEGRATION} -show_version | grep ${TAG}
+RUN if [ "${UPGRADE}" = "true" ]; then yum -y install ${INTEGRATION}; fi; \
+    yum -y install ./dist/${INTEGRATION}-${TAG}-1.x86_64.rpm

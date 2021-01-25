@@ -1,44 +1,69 @@
 #!/bin/bash
-n=0
 
-docker build -f $GITHUB_ACTION_PATH/dockerfiles-test/Dockerfile-suse    --build-arg TAG="${TAG}" --build-arg INTEGRATION="${INTEGRATION}" --build-arg TEST_EXISTENCE="${TEST_EXISTENCE}" .
-if [[ $? -ne 0 ]] ; then
-    echo "suse tests failed"
-    ((n+=1))
-fi
+set -o errexit
+set -o pipefail
 
-docker build -f $GITHUB_ACTION_PATH/dockerfiles-test/Dockerfile-suse    --build-arg TAG="${TAG}" --build-arg INTEGRATION="${INTEGRATION}" --build-arg TEST_EXISTENCE="${TEST_EXISTENCE}" --build-arg TEST_UPDATE=true .
-if [[ $? -ne 0 ]] ; then
-    echo "suse update tests failed"
-    ((n+=1))
-fi
+[[ -n $GITHUB_ACTION_PATH ]] || GITHUB_ACTION_PATH=$(pwd)
+[[ -n $DISTROS ]] || DISTROS="centos suse ubuntu"
+[[ -n $PKGDIR ]] || PKGDIR="./dist"
 
-docker build -f $GITHUB_ACTION_PATH/dockerfiles-test/Dockerfile-centos  --build-arg TAG="${TAG}" --build-arg INTEGRATION="${INTEGRATION}" --build-arg TEST_EXISTENCE="${TEST_EXISTENCE}" .
-if [[ $? -ne 0 ]] ; then
-    echo "centos tests failed"
-    ((n+=1))
+if [[ -z $POST_INSTALL ]]; then
+    POST_INSTALL="
+    test -e /etc/newrelic-infra/integrations.d/${INTEGRATION/nri-/}-config.yml.sample
+    test -e /var/db/newrelic-infra/newrelic-integrations/${INTEGRATION/nri-/}-definition.yml
+    test -e /usr/share/doc/${INTEGRATION}/LICENSE*
+    test -e /usr/share/doc/${INTEGRATION}/CHANGELOG*
+    test -e /usr/share/doc/${INTEGRATION}/README*
+    test -x /var/db/newrelic-infra/newrelic-integrations/bin/${INTEGRATION}
+    /var/db/newrelic-infra/newrelic-integrations/bin/${INTEGRATION} -show_version 2>&1 | grep -e $TAG
+    "
 fi
+POST_INSTALL="$POST_INSTALL
+$POST_INSTALL_EXTRA"
 
-docker build -f $GITHUB_ACTION_PATH/dockerfiles-test/Dockerfile-centos  --build-arg TAG="${TAG}" --build-arg INTEGRATION="${INTEGRATION}" --build-arg TEST_EXISTENCE="${TEST_EXISTENCE}" --build-arg TEST_UPDATE=true .
-if [[ $? -ne 0 ]] ; then
-    echo "centos update tests failed"
-    ((n+=1))
-fi
+function build_and_test() {
+    if [[ $1 = "true" ]]; then upgradesuffix="-upgrade"; fi
+    dockertag="$INTEGRATION:$distro-$TAG$upgradesuffix"
 
-docker build -f $GITHUB_ACTION_PATH/dockerfiles-test/Dockerfile-debian  --build-arg TAG="${TAG}" --build-arg INTEGRATION="${INTEGRATION}" --build-arg TEST_EXISTENCE="${TEST_EXISTENCE}" .
-if [[ $? -ne 0 ]] ; then
-    echo "debian tests failed"
-    ((n+=1))
-fi
+    echo "ℹ️ Running installation test for $dockertag"
+    if ! docker build -t "$dockertag" -f "$GITHUB_ACTION_PATH/dockerfiles-test/Dockerfile-$distro"\
+      --build-arg TAG="$TAG"\
+      --build-arg INTEGRATION="$INTEGRATION"\
+      --build-arg UPGRADE="$1"\
+      --build-arg PKGDIR="$PKGDIR"\
+    .; then
+        echo "❌ Install for $dockertag failed"
+        return 1
+    fi
+    echo "✅ Installation for $dockertag succeeded"
 
-docker build -f $GITHUB_ACTION_PATH/dockerfiles-test/Dockerfile-debian  --build-arg TAG="${TAG}" --build-arg INTEGRATION="${INTEGRATION}" --build-arg TEST_EXISTENCE="${TEST_EXISTENCE}" --build-arg TEST_UPDATE=true .
-if [[ $? -ne 0 ]] ; then
-    echo "debian update tests failed"
-    ((n+=1))
-fi
+    echo "ℹ️ Running post-installation checks for $dockertag"
+    echo "$POST_INSTALL" | while read -r check; do
+        [[ -n $check ]] || continue
+        if ! ( echo "$check" | docker run --rm -i "$dockertag" ); then
+            echo "  ❌ $check"
+            return 2
+        fi
+        echo "  ✅ $check"
+    done
+    echo "✅ Post-installation checks for $dockertag succeeded"
+    return 0
+}
 
-if [ $n -gt 0 ];
-then
-    echo $n "tests failed"
-    exit 1
-fi
+echo "$DISTROS" | tr " " "\n" | while read -r distro; do
+    echo "::group::Build base image for $distro"
+    docker build -t "$distro-base" -f "$GITHUB_ACTION_PATH/dockerfiles-base/Dockerfile-base-$distro" .
+    echo "::endgroup::"
+
+    echo "::group::Clean install on $distro"
+    build_and_test false
+    echo "::endgroup::"
+
+    if [[ "$UPGRADE" = "true" ]]; then
+        echo "::group::Upgrade path on $distro"
+        build_and_test true
+        echo "::endgroup::"
+    else
+        echo "ℹ️ Skipping upgrade path on $distro"
+    fi
+done

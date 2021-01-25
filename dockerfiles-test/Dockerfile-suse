@@ -1,15 +1,11 @@
-FROM pgallina/suse-test as suse-test
+FROM suse-base
 
-ARG INTEGRATION=nri-apache
-ARG TAG=0.0.1
-ARG TEST_EXISTENCE=""
-ARG TEST_UPDATE=false
+ARG INTEGRATION
+ARG TAG
+ARG PKGDIR
+ARG UPGRADE=false
 
-ADD ./dist ./dist
+ADD ${PKGDIR} ./dist
 
-RUN echo "suse-test-test for ${INTEGRATION} ${TAG}"
-RUN if [[ "${TEST_UPDATE}" = true ]] ; then zypper -n install ${INTEGRATION} ; fi
-RUN zypper -n install ./dist/${INTEGRATION}-${TAG}-1.x86_64.rpm
-
-RUN ls $TEST_EXISTENCE
-RUN /var/db/newrelic-infra/newrelic-integrations/bin/${INTEGRATION} -show_version | grep ${TAG}
+RUN if [ "${UPGRADE}" = "true" ]; then zypper -n install ${INTEGRATION}; fi; \
+    zypper -n install ./dist/${INTEGRATION}-${TAG}-1.x86_64.rpm
