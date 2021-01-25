@@ -21,14 +21,10 @@ inputs:
     description: 'Extra check lines to append to the default postInstall script.'
     required: false
     default: ""
-#  skip:
-#    description: 'Space separated list of distros to skip testing on. Valid valued are "debian", "suse" and "centos"'
-#    required: false
-#    default: ""
-#  upgradeFrom:
-#    description: 'Override which package to test the upgrade path from. Defaults to the latest version of `integration` in the NR repo.'
-#    required: false
-#    default: ""
+  distros:
+    description: 'Space-separated list of distros to run the test on. Supported values are "debian", "suse" and "centos"'
+    required: false
+    default: "centos suse debian"
 
 runs:
   using: "composite"
@@ -41,4 +37,4 @@ runs:
         UPGRADE: ${{ inputs.upgrade }}
         POST_INSTALL: ${{ inputs.postInstall }}
         POST_INSTALL_EXTRA: ${{ inputs.postInstallExtra }}
-#        SKIP: ${{ inputs.skip }}
+        DISTROS:  ${{ inputs.distros }}

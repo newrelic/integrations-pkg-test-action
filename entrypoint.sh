@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 set -o errexit
 set -o pipefail
@@ -36,21 +36,17 @@ function build_and_test() {
     return 0
 }
 
-for distro in centos debian suse; do
+echo "$DISTROS" | tr " " "\n" | while read -r distro; do
     echo "ℹ️ Building base image for $distro..."
     docker build -t "$distro-base" -f "$GITHUB_ACTION_PATH/dockerfiles-base/Dockerfile-base-$distro" .
 
     echo "ℹ️ Testing clean install"
     build_and_test false
-    (( errors += $? ))
 
     if [[ "$UPGRADE" = "true" ]]; then
         echo "ℹ️ Testing upgrade path"
         build_and_test true
-        (( errors += $? ))
     else
         echo "ℹ️ Skipping upgrade path"
     fi
 done
-
-exit $errors
