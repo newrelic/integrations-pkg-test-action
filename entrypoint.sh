@@ -26,6 +26,7 @@ function build_and_test() {
       fi
     done
     echo "✅ Post-installation checks for $INTEGRATION:$distro-$TAG succeeded"
+    return 0
 }
 
 for distro in centos debian suse; do
@@ -36,7 +37,7 @@ for distro in centos debian suse; do
     build_and_test false
     ((errors += $? ))
 
-    if [[ $UPGRADE == "true" ]]; then
+    if [[ $UPGRADE = "true" ]]; then
         echo "ℹ️ Testing upgrade path"
         build_and_test true
         ((errors += $? ))
