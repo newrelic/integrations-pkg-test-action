@@ -32,11 +32,11 @@ function build_and_test() {
 
     echo "ℹ️ Running post-installation checks"
     echo "$POST_INSTALL" | grep -e . | while read -r check; do
-      if ! ( echo "$check" | docker run --rm -i "$dockertag" ); then
-        echo "$check"
-        echo "❌ Failed for $INTEGRATION:$distro-$TAG"
-        return 2
-      fi
+        if ! ( echo "$check" | docker run --rm -i "$dockertag" ); then
+            echo "> $check"
+            echo "❌ Failed for $dockertag"
+            return 2
+        fi
     done
     echo "✅ Post-installation checks for $dockertag succeeded"
     return 0
