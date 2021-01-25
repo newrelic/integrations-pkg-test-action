@@ -15,10 +15,10 @@ inputs:
     default: ''
 runs:
   using: "composite"
-  env:
-    TAG: ${{ inputs.TAG }}
-    INTEGRATION: ${{ inputs.INTEGRATION }}
-    TEST_EXISTENCE: ${{ inputs.TEST_EXISTENCE }}
   steps: 
     - run: $GITHUB_ACTION_PATH/entrypoint.sh
       shell: bash
+      env:
+        TAG: ${{ inputs.TAG }}
+        INTEGRATION: ${{ inputs.INTEGRATION }}
+        TEST_EXISTENCE: ${{ inputs.TEST_EXISTENCE }}
