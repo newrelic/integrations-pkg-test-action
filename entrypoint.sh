@@ -12,6 +12,8 @@ fi
 POST_INSTALL="$POST_INSTALL
 $POST_INSTALL_EXTRA"
 
+errors=0
+
 function build_and_test() {
     if [[ $1 = "true" ]]; then upgradesuffix="-upgrade"; fi
     dockertag="$INTEGRATION:$distro-$TAG$upgradesuffix"
@@ -20,10 +22,10 @@ function build_and_test() {
         echo "❌ Clean install failed on $distro" 1>&2
         return 1
     fi
-    echo "✅ Installation for "$dockertag" succeeded"
+    echo "✅ Installation for $dockertag succeeded"
 
     echo "ℹ️ Running post-installation checks"
-    echo "$POST_INSTALL" | grep -e . | while read check; do
+    echo "$POST_INSTALL" | grep -e . | while read -r check; do
       if ! ( echo "$check" | docker run --rm -i "$dockertag" ); then
         echo "$check"
         echo "❌ Failed for $INTEGRATION:$distro-$TAG"
