@@ -12,8 +12,6 @@ fi
 POST_INSTALL="$POST_INSTALL
 $POST_INSTALL_EXTRA"
 
-errors=0
-
 function build_and_test() {
     if [[ $1 = "true" ]]; then upgradesuffix="-upgrade"; fi
     dockertag="$INTEGRATION:$distro-$TAG$upgradesuffix"
