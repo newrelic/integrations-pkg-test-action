@@ -1,4 +1,4 @@
-FROM debian-base
+FROM ubuntu-base
 
 ARG INTEGRATION
 ARG TAG
