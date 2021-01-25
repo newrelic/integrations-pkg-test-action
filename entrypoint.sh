@@ -8,6 +8,10 @@ set -o pipefail
 [[ -n $DISTROS ]] || DISTROS="centos suse ubuntu"
 [[ -n $PKGDIR ]] || PKGDIR="./dist"
 
+# Strip leading v from TAG if present
+TAG=${TAG/v/}
+
+# Default post-install test suite
 if [[ -z $POST_INSTALL ]]; then
     POST_INSTALL="
     test -e /etc/newrelic-infra/integrations.d/${INTEGRATION/nri-/}-config.yml.sample
@@ -21,9 +25,6 @@ if [[ -z $POST_INSTALL ]]; then
 fi
 POST_INSTALL="$POST_INSTALL
 $POST_INSTALL_EXTRA"
-
-# Strip leading v from TAG if present
-TAG=${TAG/v/}
 
 function build_and_test() {
     if [[ $1 = "true" ]]; then upgradesuffix="-upgrade"; fi
