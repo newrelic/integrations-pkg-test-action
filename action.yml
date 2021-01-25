@@ -25,6 +25,10 @@ inputs:
     description: 'Space-separated list of distros to run the test on. Supported values are "debian", "suse" and "centos"'
     required: false
     default: "centos suse debian"
+  pkgDir:
+    description: 'Folder containing installer packages'
+    required: false
+    default: 'dist'
 
 runs:
   using: "composite"
@@ -37,4 +41,5 @@ runs:
         UPGRADE: ${{ inputs.upgrade }}
         POST_INSTALL: ${{ inputs.postInstall }}
         POST_INSTALL_EXTRA: ${{ inputs.postInstallExtra }}
-        DISTROS:  ${{ inputs.distros }}
+        DISTROS: ${{ inputs.distros }}
+        PKGDIR: ${{ inputs.pkgDir }}

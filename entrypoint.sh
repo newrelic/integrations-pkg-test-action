@@ -3,6 +3,9 @@
 set -o errexit
 set -o pipefail
 
+[[ -n $GITHUB_ACTION_PATH ]] || GITHUB_ACTION_PATH=$(pwd)
+[[ -n $PKGDIR ]] || PKGDIR="./dist"
+
 if [[ -z $POST_INSTALL ]]; then
     POST_INSTALL="
     test -e /var/db/newrelic-infra/newrelic-integrations/bin/${INTEGRATION}
@@ -16,7 +19,12 @@ function build_and_test() {
     if [[ $1 = "true" ]]; then upgradesuffix="-upgrade"; fi
     dockertag="$INTEGRATION:$distro-$TAG$upgradesuffix"
 
-    if ! docker build -t "$dockertag" -f "$GITHUB_ACTION_PATH/dockerfiles-test/Dockerfile-$distro" --build-arg TAG="${TAG}" --build-arg INTEGRATION="${INTEGRATION}" --build-arg UPGRADE=$1 .; then
+    if ! docker build -t "$dockertag" -f "$GITHUB_ACTION_PATH/dockerfiles-test/Dockerfile-$distro"\
+      --build-arg TAG="$TAG"\
+      --build-arg INTEGRATION="$INTEGRATION"\
+      --build-arg UPGRADE="$1"\
+      --build-arg PKGDIR="$PKGDIR"\
+    .; then
         echo "❌ Clean install failed on $distro" 1>&2
         return 1
     fi

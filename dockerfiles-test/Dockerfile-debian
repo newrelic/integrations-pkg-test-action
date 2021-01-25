@@ -1,10 +1,11 @@
 FROM debian-base
 
-ARG INTEGRATION=nri-apache
-ARG TAG=0.0.1
+ARG INTEGRATION
+ARG TAG
+ARG PKGDIR
 ARG UPGRADE=false
 
-ADD ./dist ./dist
+ADD ${PKGDIR} ./dist
 
 RUN if [ "${UPGRADE}" = "true" ]; then apt install -y ${INTEGRATION}; fi; \
     apt install -y ./dist/${INTEGRATION}_${TAG}-1_amd64.deb

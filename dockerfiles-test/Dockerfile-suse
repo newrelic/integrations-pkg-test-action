@@ -1,10 +1,11 @@
 FROM suse-base
 
-ARG INTEGRATION=nri-apache
-ARG TAG=0.0.1
+ARG INTEGRATION
+ARG TAG
+ARG PKGDIR
 ARG UPGRADE=false
 
-ADD ./dist ./dist
+ADD ${PKGDIR} ./dist
 
-RUN if [ "${UPGRADE}" = "true" ] ; then zypper -n install ${INTEGRATION} ; fi; \
+RUN if [ "${UPGRADE}" = "true" ]; then zypper -n install ${INTEGRATION}; fi; \
     zypper -n install ./dist/${INTEGRATION}-${TAG}-1.x86_64.rpm
