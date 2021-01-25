@@ -35,7 +35,7 @@ function build_and_test() {
       if ! ( echo "$check" | docker run --rm -i "$dockertag" ); then
         echo "$check"
         echo "❌ Failed for $INTEGRATION:$distro-$TAG"
-        return 10
+        return 2
       fi
     done
     echo "✅ Post-installation checks for $dockertag succeeded"
