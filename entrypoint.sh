@@ -4,11 +4,17 @@ set -o errexit
 set -o pipefail
 
 [[ -n $GITHUB_ACTION_PATH ]] || GITHUB_ACTION_PATH=$(pwd)
+[[ -n $DISTROS ]] || DISTROS="centos suse ubuntu"
 [[ -n $PKGDIR ]] || PKGDIR="./dist"
 
 if [[ -z $POST_INSTALL ]]; then
     POST_INSTALL="
-    test -e /var/db/newrelic-infra/newrelic-integrations/bin/${INTEGRATION}
+    test -e /etc/newrelic-infra/integrations.d/${INTEGRATION/nri-/}-config.yml.sample
+    test -e /var/db/newrelic-infra/newrelic-integrations/${INTEGRATION/nri-/}-definition.yml
+    test -e /usr/share/doc/${INTEGRATION}/LICENSE*
+    test -e /usr/share/doc/${INTEGRATION}/CHANGELOG*
+    test -e /usr/share/doc/${INTEGRATION}/README*
+    test -x /var/db/newrelic-infra/newrelic-integrations/bin/${INTEGRATION}
     /var/db/newrelic-infra/newrelic-integrations/bin/${INTEGRATION} -show_version 2>&1 | grep -e $TAG
     "
 fi
@@ -19,24 +25,26 @@ function build_and_test() {
     if [[ $1 = "true" ]]; then upgradesuffix="-upgrade"; fi
     dockertag="$INTEGRATION:$distro-$TAG$upgradesuffix"
 
+    echo "ℹ️ Running installation test for $dockertag"
     if ! docker build -t "$dockertag" -f "$GITHUB_ACTION_PATH/dockerfiles-test/Dockerfile-$distro"\
       --build-arg TAG="$TAG"\
       --build-arg INTEGRATION="$INTEGRATION"\
       --build-arg UPGRADE="$1"\
       --build-arg PKGDIR="$PKGDIR"\
     .; then
-        echo "❌ Clean install failed on $distro" 1>&2
+        echo "❌ Install for $dockertag failed"
         return 1
     fi
     echo "✅ Installation for $dockertag succeeded"
 
-    echo "ℹ️ Running post-installation checks"
-    echo "$POST_INSTALL" | grep -e . | while read -r check; do
+    echo "ℹ️ Running post-installation checks for $dockertag"
+    echo "$POST_INSTALL" | while read -r check; do
+        [[ -n $check ]] || continue
         if ! ( echo "$check" | docker run --rm -i "$dockertag" ); then
-            echo "> $check"
-            echo "❌ Failed for $dockertag"
+            echo "  ❌ $check"
             return 2
         fi
+        echo "  ✅ $check"
     done
     echo "✅ Post-installation checks for $dockertag succeeded"
     return 0

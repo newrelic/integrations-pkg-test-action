@@ -13,3 +13,7 @@ RUN wget https://download.newrelic.com/infrastructure_agent/linux/apt/pool/main/
 RUN wget https://download.newrelic.com/infrastructure_agent/gpg/newrelic-infra.gpg -O - | apt-key add - && \
     echo "deb [arch=amd64] https://download.newrelic.com/infrastructure_agent/linux/apt focal main" > /etc/apt/sources.list.d/newrelic-infra.list && \
     apt update
+
+# By default, dockerized ubuntu drops files in /usr/share/doc when installing. We do not want this, as we want
+# to be able to test for their existence
+RUN rm /etc/dpkg/dpkg.cfg.d/excludes || true

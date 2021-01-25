@@ -24,11 +24,11 @@ inputs:
   distros:
     description: 'Space-separated list of distros to run the test on. Supported values are "ubuntu", "suse" and "centos"'
     required: false
-    default: "centos suse ubuntu"
+    default: ""
   pkgDir:
     description: 'Folder containing installer packages'
     required: false
-    default: 'dist'
+    default: ""
 
 runs:
   using: "composite"
