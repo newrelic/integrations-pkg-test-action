@@ -15,3 +15,4 @@ jobs:
       with:
         tag: '0.0.1'
         integration: 'nri-apache'
+        upgrade: false
