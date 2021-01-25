@@ -9,8 +9,8 @@ Usage and defaults:
     - name: Test packages installation
       uses: paologallinaharbur/test-packages-action@v1.0.5
       with:
-        tag: '0.0.1' # required
-        integration: 'nri-apache' # required
+        tag: '0.0.1' # Required, trailing v is stripped automatically.
+        integration: 'nri-apache' # Required
 ```
 
 ## Extra parameters

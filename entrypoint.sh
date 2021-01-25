@@ -3,6 +3,7 @@
 set -o errexit
 set -o pipefail
 
+# Populate defaults
 [[ -n $GITHUB_ACTION_PATH ]] || GITHUB_ACTION_PATH=$(pwd)
 [[ -n $DISTROS ]] || DISTROS="centos suse ubuntu"
 [[ -n $PKGDIR ]] || PKGDIR="./dist"
@@ -20,6 +21,9 @@ if [[ -z $POST_INSTALL ]]; then
 fi
 POST_INSTALL="$POST_INSTALL
 $POST_INSTALL_EXTRA"
+
+# Strip leading v from TAG if present
+TAG=${TAG/v/}
 
 function build_and_test() {
     if [[ $1 = "true" ]]; then upgradesuffix="-upgrade"; fi
