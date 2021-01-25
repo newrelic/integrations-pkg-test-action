@@ -14,7 +14,11 @@ inputs:
     required: false
     default: "true"
   postInstall:
-    description: 'Script to run after installation is completed. Default will test for the integration binary, config, and -show_version output'
+    description: 'Script to run after installation is completed. Default will test for existence of the integration binary and -show_version output'
+    required: false
+    default: ""
+  postInstallExtra:
+    description: 'Extra check lines to append to the default postInstall script.'
     required: false
     default: ""
 #  skip:
@@ -36,4 +40,5 @@ runs:
         INTEGRATION: ${{ inputs.integration }}
         UPGRADE: ${{ inputs.upgrade }}
         POST_INSTALL: ${{ inputs.postInstall }}
+        POST_INSTALL_EXTRA: ${{ inputs.postInstallExtra }}
 #        SKIP: ${{ inputs.skip }}
