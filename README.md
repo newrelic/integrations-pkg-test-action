@@ -9,7 +9,7 @@ It tests clean installation and upgrade for integration packages in CentOS, Suse
 Usage and defaults:
 ```yaml
     - name: Test packages installation
-      uses: paologallinaharbur/test-packages-action/linux@main # sample only, do not use `main` in production
+      uses: paologallinaharbur/test-packages-action/linux@v1
       with:
         tag: '0.0.1' # Required, trailing v is stripped automatically if found
         integration: 'nri-apache' # Required, with nri-prefix
