@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 set -o errexit
 set -o pipefail
@@ -27,6 +27,7 @@ POST_INSTALL="$POST_INSTALL
 $POST_INSTALL_EXTRA"
 
 function build_and_test() {
+    # Do an upgrade test (i.e. install integration from the repo before installing the local package) if $1 == true
     if [[ $1 = "true" ]]; then upgradesuffix="-upgrade"; fi
     dockertag="$INTEGRATION:$distro-$TAG$upgradesuffix"
 
@@ -44,7 +45,8 @@ function build_and_test() {
 
     echo "ℹ️ Running post-installation checks for $dockertag"
     echo "$POST_INSTALL" | while read -r check; do
-        [[ -n $check ]] || continue
+        [[ -n $check ]] || continue # Skip empty lines
+        # Feed each check to a fresh instance of the docker container
         if ! ( echo "$check" | docker run --rm -i "$dockertag" ); then
             echo "  ❌ $check"
             return 2

@@ -1,10 +1,9 @@
 # test-packages-action
 
-## `/linux`
-
 An action to test for correct installation and upgrades of New Relic integration packages.
+It tests clean installation and upgrade for integration packages in CentOS, Suse and Ubuntu, as well as in Windows.
 
-It tests clean installation and upgrade for integration packages in CentOS, Suse and Ubuntu.
+## `/linux`
 
 Usage and defaults:
 ```yaml
