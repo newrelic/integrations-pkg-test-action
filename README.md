@@ -1,5 +1,7 @@
 # test-packages-action
 
+## `/linux`
+
 An action to test for correct installation and upgrades of New Relic integration packages.
 
 It tests clean installation and upgrade for integration packages in CentOS, Suse and Ubuntu.
@@ -7,13 +9,13 @@ It tests clean installation and upgrade for integration packages in CentOS, Suse
 Usage and defaults:
 ```yaml
     - name: Test packages installation
-      uses: paologallinaharbur/test-packages-action@v1.0.5
+      uses: paologallinaharbur/test-packages-action/linux@main # sample only, do not use `main` in production
       with:
-        tag: '0.0.1' # Required, trailing v is stripped automatically.
-        integration: 'nri-apache' # Required
+        tag: '0.0.1' # Required, trailing v is stripped automatically if found
+        integration: 'nri-apache' # Required, with nri-prefix
 ```
 
-## Extra parameters
+### Extra parameters
 
 The following inputs can be specified to override the default behavior 
 
@@ -27,3 +29,7 @@ The following inputs can be specified to override the default behavior
   - default: `centos suse ubuntu`
 * `pkgDir`: Path where archives (.deb and .rpm) reside
   - default: `./dist`
+
+## `/windows`
+
+WIP
