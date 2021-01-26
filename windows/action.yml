@@ -1,0 +1,12 @@
+name: 'Test packages installation'
+description: 'This action test packages installation in Suse, CentOS and Ubuntu'
+inputs:
+  message:
+    description: 'Say hi'
+    required: false
+    default: 'Hi worldy'
+runs:
+  using: "composite"
+  steps: 
+    - run: echo "${{ inputs.message }}"
+      shell: bash
