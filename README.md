@@ -11,8 +11,8 @@ Usage and defaults:
     - name: Test packages installation
       uses: paologallinaharbur/test-packages-action/linux@v1
       with:
-        tag: '0.0.1' # Required, trailing v is stripped automatically if found
-        integration: 'nri-apache' # Required, with nri-prefix
+        tag: ${{ env.TAG }} # Required, trailing v is stripped automatically if found
+        integration: 'nri-${{ env.INTEGRATION }}' # Required, with nri- prefix
 ```
 
 ### Extra parameters
