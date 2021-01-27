@@ -29,12 +29,12 @@ function build_and_test() {
     dockertag="$INTEGRATION:$distro-$TAG$upgradesuffix"
 
     echo "ℹ️ Running installation test for $dockertag"
-    if ! docker build -t "$dockertag" -f "$GITHUB_ACTION_PATH/dockerfiles-test/Dockerfile-$distro"\
+    if ! docker build -t "$dockertag" -f "$GITHUB_ACTION_PATH/$distro.dockerfile"\
       --build-arg TAG="$TAG"\
       --build-arg INTEGRATION="$INTEGRATION"\
       --build-arg UPGRADE="$1"\
       --build-arg PKGDIR="$PKGDIR"\
-    .; then
+    "$GITHUB_ACTION_PATH"; then
         echo "❌ Install for $dockertag failed"
         return 1
     fi
@@ -55,10 +55,6 @@ function build_and_test() {
 }
 
 echo "$DISTROS" | tr " " "\n" | while read -r distro; do
-    echo "::group::Build base image for $distro"
-    docker build -t "$distro-base" -f "$GITHUB_ACTION_PATH/dockerfiles-base/Dockerfile-base-$distro" .
-    echo "::endgroup::"
-
     echo "::group::Clean install on $distro"
     build_and_test false
     echo "::endgroup::"
