@@ -25,7 +25,7 @@ $POST_INSTALL_EXTRA"
 
 function build_and_test() {
     # Do an upgrade test (i.e. install integration from the repo before installing the local package) if $1 == true
-    if [[ $1 = "true" ]]; then upgradesuffix="-upgrade"; fi
+    if [[ "$1" = "true" ]]; then upgradesuffix="-upgrade"; fi
     dockertag="$INTEGRATION:$distro-$TAG$upgradesuffix"
 
     echo "ℹ️ Running installation test for $dockertag"
@@ -34,13 +34,14 @@ function build_and_test() {
       --build-arg INTEGRATION="$INTEGRATION"\
       --build-arg UPGRADE="$1"\
       --build-arg PKGDIR="$PKGDIR"\
-    "$GITHUB_ACTION_PATH"; then
+    .; then
         echo "❌ Install for $dockertag failed"
         return 1
     fi
     echo "✅ Installation for $dockertag succeeded"
 
     echo "ℹ️ Running post-installation checks for $dockertag"
+    failures
     echo "$POST_INSTALL" | while read -r check; do
         [[ -n $check ]] || continue # Skip empty lines
         # Feed each check to a fresh instance of the docker container
