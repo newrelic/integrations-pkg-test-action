@@ -25,11 +25,11 @@ $POST_INSTALL_EXTRA"
 
 function build_and_test() {
     # Do an upgrade test (i.e. install integration from the repo before installing the local package) if $1 == true
-    if [[ $1 = "true" ]]; then upgradesuffix="-upgrade"; fi
+    if [[ "$1" = "true" ]]; then upgradesuffix="-upgrade"; fi
     dockertag="$INTEGRATION:$distro-$TAG$upgradesuffix"
 
     echo "ℹ️ Running installation test for $dockertag"
-    if ! docker build -t "$dockertag" -f "$GITHUB_ACTION_PATH/dockerfiles-test/Dockerfile-$distro"\
+    if ! docker build -t "$dockertag" -f "$GITHUB_ACTION_PATH/$distro.dockerfile"\
       --build-arg TAG="$TAG"\
       --build-arg INTEGRATION="$INTEGRATION"\
       --build-arg UPGRADE="$1"\
@@ -55,10 +55,6 @@ function build_and_test() {
 }
 
 echo "$DISTROS" | tr " " "\n" | while read -r distro; do
-    echo "::group::Build base image for $distro"
-    docker build -t "$distro-base" -f "$GITHUB_ACTION_PATH/dockerfiles-base/Dockerfile-base-$distro" .
-    echo "::endgroup::"
-
     echo "::group::Clean install on $distro"
     build_and_test false
     echo "::endgroup::"
