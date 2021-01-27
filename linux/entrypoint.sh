@@ -16,9 +16,6 @@ if [[ -z $POST_INSTALL ]]; then
     POST_INSTALL="
     test -e /etc/newrelic-infra/integrations.d/${INTEGRATION/nri-/}-config.yml.sample
     test -e /var/db/newrelic-infra/newrelic-integrations/${INTEGRATION/nri-/}-definition.yml
-    test -e /usr/share/doc/${INTEGRATION}/LICENSE*
-    test -e /usr/share/doc/${INTEGRATION}/CHANGELOG*
-    test -e /usr/share/doc/${INTEGRATION}/README*
     test -x /var/db/newrelic-infra/newrelic-integrations/bin/${INTEGRATION}
     /var/db/newrelic-infra/newrelic-integrations/bin/${INTEGRATION} -show_version 2>&1 | grep -e $TAG
     "
