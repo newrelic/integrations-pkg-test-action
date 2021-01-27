@@ -41,7 +41,6 @@ function build_and_test() {
     echo "✅ Installation for $dockertag succeeded"
 
     echo "ℹ️ Running post-installation checks for $dockertag"
-    failures
     echo "$POST_INSTALL" | while read -r check; do
         [[ -n $check ]] || continue # Skip empty lines
         # Feed each check to a fresh instance of the docker container
