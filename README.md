@@ -31,4 +31,20 @@ The following inputs can be specified to override the default behavior
 
 ## `/windows`
 
-WIP
+Usage and defaults:
+```yaml
+    - name: Test packages installation
+      uses: paologallinaharbur/test-packages-action/linux@v1
+      with:
+        tag: ${{ env.TAG }} # Required, trailing v is stripped automatically if found
+        integration: 'nri-${{ env.INTEGRATION }}' # Required, with nri- prefix
+        arch: 'amd64' # Architecture to test [amd64, 386]
+```
+### Extra parameters
+
+The following inputs can be specified to override the default behavior 
+
+* `upgrade`: Whether to test upgrade path against the version of the same integration in the newrelic repo
+  - default: `true`
+* `pkgDir`: Path where archives (.msi) reside
+  - default: `build\package\windows\nri-${ARCH}-installer\bin\Release`
