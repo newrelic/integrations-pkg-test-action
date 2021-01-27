@@ -23,7 +23,7 @@ FROM ubuntu-base
 
 ARG INTEGRATION
 ARG TAG
-ARG PKGDIR
+ARG PKGDIR=./dist
 ARG UPGRADE=false
 
 ADD ${PKGDIR} ./dist
