@@ -41,15 +41,25 @@ function build_and_test() {
     echo "✅ Installation for $dockertag succeeded"
 
     echo "ℹ️ Running post-installation checks for $dockertag"
-    echo "$POST_INSTALL" | while read -r check; do
-        [[ -n $check ]] || continue # Skip empty lines
-        # Feed each check to a fresh instance of the docker container
-        if ! ( echo "$check" | docker run --rm -i "$dockertag" ); then
-            echo "  ❌ $check"
-            return 2
-        fi
-        echo "  ✅ $check"
-    done
+    if ! echo "$POST_INSTALL" | {
+        # This is just a while | read construct with a local variable to store failures
+        failed=0
+        while read -r check; do
+            [[ -n $check ]] || continue # Skip empty lines
+            # Feed each check to a fresh instance of the docker container
+            if ! ( echo "$check" | docker run --rm -i "$dockertag" ); then
+                echo "  ❌ $check"
+                failed=1
+                continue
+            fi
+            echo "  ✅ $check"
+        done
+        return $failed
+    }; then
+        echo "❌ Post-installation checks for $dockertag failed"
+        return 1
+    fi
+
     echo "✅ Post-installation checks for $dockertag succeeded"
     return 0
 }
