@@ -1,0 +1,11 @@
+FROM centos:centos8
+
+# Installing needed tools
+RUN yum update -y && \
+    yum install -y wget
+
+# Adding Newrelic repository
+RUN wget -O /etc/yum.repos.d/newrelic-infra.repo https://download.newrelic.com/infrastructure_agent/linux/yum/el/8/x86_64/newrelic-infra.repo && \
+    yum -q makecache -y --disablerepo='*' --enablerepo='newrelic-infra' && \
+    yum update -y && \
+    yum -y install newrelic-infra

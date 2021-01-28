@@ -1,0 +1,45 @@
+name: 'Test packages installation'
+description: 'This action test packages installation in Suse, CentOS and Ubuntu'
+inputs:
+  tag:
+    description: 'Tag of the integration to test'
+    required: true
+    default: '0.0.0'
+  integration:
+    description: 'Name of the integration to test'
+    required: true
+    default: 'nri-test'
+  upgrade:
+    description: 'Wether to test upgrade path as well'
+    required: false
+    default: "true"
+  postInstall:
+    description: 'Script to run after installation is completed. Default will test for existence of the integration binary and -show_version output'
+    required: false
+    default: ""
+  postInstallExtra:
+    description: 'Extra check lines to append to the default postInstall script.'
+    required: false
+    default: ""
+  distros:
+    description: 'Space-separated list of distros to run the test on. Supported values are "ubuntu", "suse" and "centos"'
+    required: false
+    default: ""
+  pkgDir:
+    description: 'Folder containing installer packages'
+    required: false
+    default: ""
+
+runs:
+  using: "composite"
+  steps: 
+    - run: $GITHUB_ACTION_PATH/entrypoint.sh
+      shell: bash
+      env:
+        TAG: ${{ inputs.tag }}
+        INTEGRATION: ${{ inputs.integration }}
+        UPGRADE: ${{ inputs.upgrade }}
+        POST_INSTALL: ${{ inputs.postInstall }}
+        POST_INSTALL_EXTRA: ${{ inputs.postInstallExtra }}
+        DISTROS: ${{ inputs.distros }}
+        PKGDIR: ${{ inputs.pkgDir }}
