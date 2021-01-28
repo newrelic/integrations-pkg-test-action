@@ -1,0 +1,48 @@
+on: [push]
+
+jobs:
+  linux:
+    runs-on: ubuntu-latest
+    name: A job to test created packages
+    steps:
+    - uses: actions/checkout@v2
+    - name: Simulating Build
+      run: |
+        mkdir ./dist
+        wget https://github.com/newrelic/nri-apache/releases/download/v0.0.1/nri-apache-0.0.1-1.x86_64.rpm -O ./dist/nri-apache-0.0.1-1.x86_64.rpm
+        wget https://github.com/newrelic/nri-apache/releases/download/v0.0.1/nri-apache_0.0.1-1_amd64.deb -O ./dist/nri-apache_0.0.1-1_amd64.deb
+    - uses: ./linux
+      with:
+        tag: '0.0.1'
+        integration: 'nri-apache'
+        upgrade: false
+  windows:
+    runs-on: windows-2019
+    name: A job to test created packages
+    strategy:
+      fail-fast: false
+      matrix:
+        goarch: [amd64,386]
+        # We need a clean runner (not using containers here) to execute each installation test type.
+        test-upgrade: [true,false]
+        exclude:
+          #386 packages are not available for integrations. This should be removed after the first package is uploaded.
+          - goarch: 386
+            test-upgrade: true  
+    steps:
+      - uses: actions/checkout@v2
+      - name: Simulating Build
+        shell: pwsh
+        run: |
+          New-Item -Name "test" -ItemType "directory"
+          [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+          Invoke-WebRequest "https://github.com/newrelic/nri-vsphere/releases/download/v3.0.1/nri-vsphere-${{ matrix.goarch }}.3.0.1.msi" -OutFile "test\nri-vsphere-${{ matrix.goarch }}.3.0.1.msi"
+          ls .\test\
+      - uses: ./windows
+        with:
+          tag: 'v3.0.1'
+          integration: 'nri-vsphere'
+          arch: ${{ matrix.goarch }}
+          upgrade: ${{ matrix.test-upgrade }}
+          pkgDir: test
+

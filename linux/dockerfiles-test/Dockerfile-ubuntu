@@ -1,0 +1,11 @@
+FROM ubuntu-base
+
+ARG INTEGRATION
+ARG TAG
+ARG PKGDIR
+ARG UPGRADE=false
+
+ADD ${PKGDIR} ./dist
+
+RUN if [ "${UPGRADE}" = "true" ]; then apt install -y ${INTEGRATION}; fi; \
+    apt install -y ./dist/${INTEGRATION}_${TAG}-1_amd64.deb

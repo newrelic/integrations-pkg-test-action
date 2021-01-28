@@ -1,27 +1,61 @@
 [![Community Project header](https://github.com/newrelic/opensource-website/raw/master/src/images/categories/Community_Project.png)](https://opensource.newrelic.com/oss-category/#community-project)
 
-# [Name of Project] [build badges go here when available]
+# test-packages-action
 
->[Brief description - what is the project and value does it provide? How often should users expect to get releases? How is versioning set up? Where does this project want to go?]
-
-## Installation
-
-> [Include a step-by-step procedure on how to get your code installed. Be sure to include any third-party dependencies that need to be installed separately]
-
-## Getting Started
->[Simple steps to start working with the software similar to a "Hello World"]
+>An action to test for correct installation and upgrades of New Relic integration packages.
+It tests clean installation and upgrade for integration packages in CentOS, Suse and Ubuntu, as well as in Windows.
 
 ## Usage
->[**Optional** - Include more thorough instructions on how to use the software. This section might not be needed if the Getting Started section is enough. Remove this section if it's not needed.]
 
+## Test linux packages `/linux`
 
-## Building
+Usage and defaults:
+```yaml
+    - name: Test packages installation
+      uses: newrelic/integrations-pkg-test-action/linux@v1
+      with:
+        tag: ${{ env.TAG }} # Required, trailing v is stripped automatically if found
+        integration: 'nri-${{ env.INTEGRATION }}' # Required, with nri- prefix
+```
 
->[**Optional** - Include this section if users will need to follow specific instructions to build the software from source. Be sure to include any third party build dependencies that need to be installed separately. Remove this section if it's not needed.]
+### Extra parameters
+
+The following inputs can be specified to override the default behavior 
+
+* `upgrade`: Whether to test upgrade path against the version of the same integration in the newrelic repo
+  - default: `true`
+* `postInstallExtra`: Extra checks to run in addition to the default post-install script. This is specified as a multi-line shell script, which is run line-by-line in different containers. A non-zero exit code for any line causes the installation check to fail.
+  - default: empty
+* `postInstall`: Override the post-install test script. This is run line-by-line in different containers. A non-zero exit code causes the install check to fail.
+  - default: See `entrypoint.sh`
+* `distros`: Space-separated list of distros to run the test on. Supported values are "ubuntu", "suse" and "centos"
+  - default: `centos suse ubuntu`
+* `pkgDir`: Path where archives (.deb and .rpm) reside
+  - default: `./dist`
+
+## Test Windows packages `/windows`
+
+Usage and defaults:
+```yaml
+    - name: Test packages installation
+      uses: newrelic/integrations-pkg-test-action/windows@v1
+      with:
+        tag: ${{ env.TAG }} # Required, trailing v is stripped automatically if found
+        integration: 'nri-${{ env.INTEGRATION }}' # Required, with nri- prefix
+        arch: 'amd64' # Architecture to test [amd64, 386]
+```
+### Extra parameters
+
+The following inputs can be specified to override the default behavior 
+
+* `upgrade`: Whether to test upgrade path against the version of the same integration in the newrelic repo
+  - default: `true`
+* `pkgDir`: Path where archives (.msi) reside
+  - default: `build\package\windows\nri-${ARCH}-installer\bin\Release`
 
 ## Testing
 
->[**Optional** - Include instructions on how to run tests if we include tests with the codebase. Remove this section if it's not needed.]
+>Testing is performed using [this](https://github.com/newrelic/integrations-pkg-test-action/blob/main/.github/workflows/test.yml) action. 
 
 ## Support
 
