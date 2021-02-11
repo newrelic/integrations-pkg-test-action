@@ -13,7 +13,12 @@ if($UPGRADE -eq "true")
     $latest_msi_url = "https://download.newrelic.com/infrastructure_agent/windows/integrations/${INTEGRATION}/${latest_msi_name}"
     write-host "===> Downloading latest released version of msi from ${latest_msi_url}"
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-    $r = Invoke-WebRequest "${latest_msi_url}" -OutFile "${latest_msi_name}"
+    try {
+        Invoke-WebRequest "${latest_msi_url}" -OutFile "${latest_msi_name}"
+    } catch {
+        write-host "⚠️ Couldn't fetch latest version from ${latest_msi_url}, skipping test"
+        exit 0
+    }
 
     write-host "===> Installing latest released version of msi from ${latest_msi_url}"
     $p = Start-Process msiexec.exe -Wait -PassThru -ArgumentList "/qn /L*v msi_log /i ${latest_msi_name}"
