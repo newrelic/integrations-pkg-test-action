@@ -25,7 +25,7 @@ $POST_INSTALL_EXTRA"
 
 function build_and_test() {
     # Do an upgrade test (i.e. install integration from the repo before installing the local package) if $1 == true
-    if [[ "$1" = "true" ]]; then upgradesuffix="-upgrade"; fi
+    if [[ "$1" == "true" ]]; then upgradesuffix="-upgrade"; fi
     dockertag="$INTEGRATION:$distro-$TAG$upgradesuffix"
 
     echo "ℹ️ Running installation test for $dockertag"
