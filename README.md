@@ -11,7 +11,7 @@ It tests clean installation and upgrade for integration packages in CentOS, Suse
 Usage and defaults:
 ```yaml
     - name: Test packages installation
-      uses: paologallinaharbur/test-packages-action/linux@v1
+      uses: newrelic/integrations-pkg-test-action/linux@v1
       with:
         tag: ${{ env.TAG }} # Required, trailing v is stripped automatically if found
         integration: 'nri-${{ env.INTEGRATION }}' # Required, with nri- prefix
@@ -37,7 +37,7 @@ The following inputs can be specified to override the default behavior
 Usage and defaults:
 ```yaml
     - name: Test packages installation
-      uses: paologallinaharbur/test-packages-action/windows@v1
+      uses: newrelic/integrations-pkg-test-action/windows@v1
       with:
         tag: ${{ env.TAG }} # Required, trailing v is stripped automatically if found
         integration: 'nri-${{ env.INTEGRATION }}' # Required, with nri- prefix

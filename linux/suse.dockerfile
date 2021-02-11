@@ -20,5 +20,7 @@ ARG UPGRADE=false
 
 ADD ${PKGDIR} ./dist
 
-RUN if [ "${UPGRADE}" = "true" ]; then zypper -n install ${INTEGRATION}; fi; \
+RUN if [ "${UPGRADE}" = "true" ]; then \
+        zypper -n install ${INTEGRATION} || echo "⚠️ Previous version install failed, proceeding anyway"; \
+    fi; \
     zypper -n install ./dist/${INTEGRATION}-${TAG}-1.x86_64.rpm
