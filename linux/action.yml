@@ -10,7 +10,7 @@ inputs:
     required: true
     default: 'nri-test'
   upgrade:
-    description: 'Wether to test upgrade path as well'
+    description: 'Whether to test upgrade path as well'
     required: false
     default: "true"
   postInstall:
