@@ -20,5 +20,7 @@ ARG UPGRADE=false
 
 ADD ${PKGDIR} ./dist
 
-RUN if [ "${UPGRADE}" = "true" ]; then yum -y install ${INTEGRATION}; fi; \
+RUN if [ "${UPGRADE}" = "true" ]; then \
+        yum -y install ${INTEGRATION} || echo "⚠️ Previous version install failed, proceeding anyway"; \
+    fi; \
     yum -y install ./dist/${INTEGRATION}-${TAG}-1.x86_64.rpm

@@ -28,5 +28,7 @@ ARG UPGRADE=false
 
 ADD ${PKGDIR} ./dist
 
-RUN if [ "${UPGRADE}" = "true" ]; then apt install -y ${INTEGRATION}; fi; \
+RUN if [ "${UPGRADE}" = "true" ]; then\
+        apt install -y ${INTEGRATION} || echo "⚠️ Previous version install failed, proceeding anyway"; \
+    fi; \
     apt install -y ./dist/${INTEGRATION}_${TAG}-1_amd64.deb
