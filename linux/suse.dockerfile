@@ -1,4 +1,4 @@
-FROM opensuse/tumbleweed as suse-base
+FROM opensuse/leap as suse-base
 
 # Installing needed tools
 RUN zypper -n install wget gnupg curl
