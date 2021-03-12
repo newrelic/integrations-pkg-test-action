@@ -9,12 +9,25 @@ It tests clean installation and upgrade for integration packages in CentOS, Suse
 ### `/linux`
 
 Usage and defaults:
+
+Test local packages produced in the `dist` folder:
 ```yaml
-    - name: Test packages installation
-      uses: newrelic/integrations-pkg-test-action/linux@v1
-      with:
-        tag: ${{ env.TAG }} # Required, trailing v is stripped automatically if found
-        integration: 'nri-${{ env.INTEGRATION }}' # Required, with nri- prefix
+- name: Test packages installation
+  uses: newrelic/integrations-pkg-test-action/linux@v1
+  with:
+    tag: ${{ env.TAG }} # Required, trailing v is stripped automatically if found
+    integration: 'nri-${{ env.INTEGRATION }}' # Required, with nri- prefix
+```
+
+Test packages uploaded to the staging repos:
+```yaml
+- name: Test staging repo
+  uses: newrelic/integrations-pkg-test-action/linux@v1
+  with:
+    tag: ${{ env.TAG }} # Does *NOT* specify which version is downloaded from the remote repo, `-show_version` output *WILL* be checked against this.  
+    integration: 'nri-${{ env.INTEGRATION }}' # Required, with nri- prefix
+    stagingRepo: true
+    packageLocation: repo
 ```
 
 #### Extra parameters
@@ -29,8 +42,29 @@ The following inputs can be specified to override the default behavior
     - default: See `entrypoint.sh`
 * `distros`: Space-separated list of distros to run the test on. Supported values are "ubuntu", "suse" and "centos"
     - default: `centos suse ubuntu`
+* `packageLocation`: Whether to test local packages (`local`) or packages from the upstream repo (`repo`). Useful for testing the staging repo.
+    - *Note: Specifying both `packageLocation: repo` and `upgrade: true` is not possible and such combination will be silently ignored.*
+    - default: `local`
+* `stagingRepo`: Pull repo packages from the staging repo rather than production. Useful for testing staging repo packages alone (rather than local).
+    - default: `false`
 * `pkgDir`: Path where archives (.deb and .rpm) reside
     - default: `./dist`
+
+#### Running locally
+
+This action is mainly contained in one shell script (and a few dockerfiles) and can be run in systems which have a bash-compatible shell and docker installed.
+
+Inputs are taken as environment vars, transforming `camelCase` to `UPPERCASE_WITH_UNDERSCORES`. Additionally, `GITHUB_ACTION_PATH` must be specified if WD is not the `linux/` directory.
+
+Test local packages:
+```bash
+GITHUB_ACTION_PATH=./linux TAG=v1.3.0 INTEGRATION=nri-snmp ./linux/entrypoint.sh
+```
+
+Test staging repo packages:
+```bash
+STAGING_REPO=true PACKAGE_LOCATION=repo PKGDIR=testdata/dist GITHUB_ACTION_PATH=./linux TAG=v1.3.0 INTEGRATION=nri-snmp ./linux/entrypoint.sh
+```
 
 ### `/windows`
 
