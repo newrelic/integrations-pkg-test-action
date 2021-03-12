@@ -1,0 +1,21 @@
+name: Self-test linux action
+
+on:
+  push:
+    branches:
+      - master
+      - main
+  pull_request:
+
+jobs:
+  linux:
+    runs-on: ubuntu-latest
+    name: A job to test created packages
+    steps:
+    - uses: actions/checkout@v2
+    - uses: ./linux
+      with:
+        tag: '1.3.0'
+        integration: 'nri-snmp'
+        upgrade: false
+        pkgDir: testdata/dist
