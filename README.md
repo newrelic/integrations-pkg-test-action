@@ -1,4 +1,5 @@
 [![Community Project header](https://github.com/newrelic/opensource-website/raw/master/src/images/categories/Community_Project.png)](https://opensource.newrelic.com/oss-category/#community-project)
+
 # integrations-pkg-test-action
 
 An action to test for correct installation and upgrades of New Relic integration packages.
@@ -35,20 +36,20 @@ Test packages uploaded to the staging repos:
 The following inputs can be specified to override the default behavior
 
 * `upgrade`: Whether to test upgrade path against the version of the same integration in the newrelic repo
-    - default: `true`
+  - default: `true`
 * `postInstallExtra`: Extra checks to run in addition to the default post-install script. This is specified as a multi-line shell script, which is run line-by-line in different containers. A non-zero exit code for any line causes the installation check to fail.
-    - default: empty
+  - default: empty
 * `postInstall`: Override the post-install test script. This is run line-by-line in different containers. A non-zero exit code causes the install check to fail.
-    - default: See `entrypoint.sh`
+  - default: See `entrypoint.sh`
 * `distros`: Space-separated list of distros to run the test on. Supported values are "ubuntu", "suse" and "centos"
-    - default: `centos suse ubuntu`
+  - default: `centos suse ubuntu`
 * `packageLocation`: Whether to test local packages (`local`) or packages from the upstream repo (`repo`). Useful for testing the staging repo.
-    - *Note: Specifying both `packageLocation: repo` and `upgrade: true` is not possible and such combination will be silently ignored.*
-    - default: `local`
+  - *Note: Specifying both `packageLocation: repo` and `upgrade: true` is not possible and such combination will be silently ignored.*
+  - default: `local`
 * `stagingRepo`: Pull repo packages from the staging repo rather than production. Useful for testing staging repo packages alone (rather than local).
-    - default: `false`
+  - default: `false`
 * `pkgDir`: Path where archives (.deb and .rpm) reside
-    - default: `./dist`
+  - default: `./dist`
 
 #### Running locally
 
@@ -82,9 +83,9 @@ Usage and defaults:
 The following inputs can be specified to override the default behavior
 
 * `upgrade`: Whether to test upgrade path against the version of the same integration in the newrelic repo
-    - default: `true`
+  - default: `true`
 * `pkgDir`: Path where archives (.msi) reside
-    - default: `build\package\windows\nri-${ARCH}-installer\bin\Release`
+  - default: `build\package\windows\nri-${ARCH}-installer\bin\Release`
 
 ## Support
 
