@@ -48,6 +48,7 @@ function build_and_test() {
     # Compute suffix for the docker tag
     suffix=""
     if [[ "$install_repo" == "true" ]]; then suffix=${suffix}-repo; fi
+    if [[ "$STAGING_REPO" == "true" ]]; then suffix=${suffix}-staging; fi
     if [[ "$install_local" == "true" ]]; then suffix=${suffix}-local; fi
 
     dockertag="${INTEGRATION}:${distro}-${TAG}${suffix}"
@@ -60,6 +61,7 @@ function build_and_test() {
         --build-arg INSTALL_REPO="$install_repo" \
         --build-arg INSTALL_LOCAL="$install_local" \
         --build-arg PKGDIR="$PKGDIR" \
+        --build-arg STAGING_REPO="$STAGING_REPO" \
         .; then
         echo "::endgroup::"
         echo "❌ Install for $dockertag failed"
