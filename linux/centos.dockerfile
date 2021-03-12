@@ -16,11 +16,14 @@ FROM centos-base
 ARG INTEGRATION
 ARG TAG
 ARG PKGDIR=./dist
-ARG UPGRADE=false
+ARG INSTALL_REPO=false
+ARG INSTALL_LOCAL=true
 
 ADD ${PKGDIR} ./dist
 
-RUN if [ "${UPGRADE}" = "true" ]; then \
+RUN if [ "${INSTALL_REPO}" = "true" ]; then \
         yum -y install ${INTEGRATION} || echo "⚠️ Previous version install failed, proceeding anyway"; \
     fi; \
-    yum -y install ./dist/${INTEGRATION}-${TAG}-1.x86_64.rpm
+    if [ "${INSTALL_LOCAL}" = "true" ]; then \
+            yum -y install "./dist/${INTEGRATION}-${TAG}-1.x86_64.rpm"; \
+    fi

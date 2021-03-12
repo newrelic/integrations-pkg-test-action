@@ -16,11 +16,14 @@ FROM suse-base
 ARG INTEGRATION
 ARG TAG
 ARG PKGDIR=./dist
-ARG UPGRADE=false
+ARG INSTALL_REPO=false
+ARG INSTALL_LOCAL=true
 
 ADD ${PKGDIR} ./dist
 
-RUN if [ "${UPGRADE}" = "true" ]; then \
+RUN if [ "${INSTALL_REPO}" = "true" ]; then \
         zypper -n install ${INTEGRATION} || echo "⚠️ Previous version install failed, proceeding anyway"; \
     fi; \
-    zypper -n install ./dist/${INTEGRATION}-${TAG}-1.x86_64.rpm
+    if [ "${INSTALL_LOCAL}" = "true" ]; then \
+        zypper -n install "./dist/${INTEGRATION}-${TAG}-1.x86_64.rpm"; \
+    fi

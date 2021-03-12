@@ -7,6 +7,7 @@ set -o pipefail
 [[ -n $GITHUB_ACTION_PATH ]] || GITHUB_ACTION_PATH=$(pwd)
 [[ -n $DISTROS ]] || DISTROS="centos suse ubuntu"
 [[ -n $PKGDIR ]] || PKGDIR="./dist"
+[[ -n $PACKAGE_LOCATION ]] || PACKAGE_LOCATION="local"
 
 # Strip leading v from TAG if present
 TAG=${TAG/v/}
@@ -24,18 +25,42 @@ POST_INSTALL="$POST_INSTALL
 $POST_INSTALL_EXTRA"
 
 function build_and_test() {
-    # Do an upgrade test (i.e. install integration from the repo before installing the local package) if $1 == true
-    if [[ "$1" == "true" ]]; then upgradesuffix="-upgrade"; fi
-    dockertag="$INTEGRATION:$distro-$TAG$upgradesuffix"
+    upgrade=$1
+    if [[ "$PACKAGE_LOCATION" == "local" ]]; then
+        # Always install local package if location is local
+        install_local=true
+        # Install repo package if this is an upgrade test
+        install_repo=$upgrade
+    elif [[ "$PACKAGE_LOCATION" == "repo" ]]; then
+        if [[ "$upgrade" == "true" ]]; then
+            # Remote package and upgrade, invalid case
+            echo "❌ Cannot run upgrade test on when PACKAGE_LOCATION=repo, skipping"
+            return 1
+        fi
+        # Repo package, not upgrade, install repo only
+        install_repo=true
+        install_local=false
+    else
+        echo "❌ Unknown value for PACKAGE_LOCATION '${PACKAGE_LOCATION}'"
+        return 1
+    fi
+
+    # Compute suffix for the docker tag
+    suffix=""
+    if [[ "$install_repo" == "true" ]]; then suffix=${suffix}-repo; fi
+    if [[ "$install_local" == "true" ]]; then suffix=${suffix}-local; fi
+
+    dockertag="${INTEGRATION}:${distro}-${TAG}${suffix}"
 
     echo "ℹ️ Running installation test for $dockertag"
     echo "::group::docker build $dockertag"
-    if ! docker build -t "$dockertag" -f "$GITHUB_ACTION_PATH/$distro.dockerfile"\
-      --build-arg TAG="$TAG"\
-      --build-arg INTEGRATION="$INTEGRATION"\
-      --build-arg UPGRADE="$1"\
-      --build-arg PKGDIR="$PKGDIR"\
-    .; then
+    if ! docker build -t "$dockertag" -f "${GITHUB_ACTION_PATH}/${distro}.dockerfile" \
+        --build-arg TAG="$TAG" \
+        --build-arg INTEGRATION="$INTEGRATION" \
+        --build-arg INSTALL_REPO="$install_repo" \
+        --build-arg INSTALL_LOCAL="$install_local" \
+        --build-arg PKGDIR="$PKGDIR" \
+        .; then
         echo "::endgroup::"
         echo "❌ Install for $dockertag failed"
         return 1
@@ -50,7 +75,7 @@ function build_and_test() {
         while read -r check; do
             [[ -n $check ]] || continue # Skip empty lines
             # Feed each check to a fresh instance of the docker container
-            if ! ( echo "$check" | docker run --rm -i "$dockertag" ); then
+            if ! (echo "$check" | docker run --rm -i "$dockertag"); then
                 echo "  ❌ $check"
                 failed=1
                 continue
@@ -70,7 +95,7 @@ function build_and_test() {
 echo "$DISTROS" | tr " " "\n" | while read -r distro; do
     build_and_test false
 
-    if [[ "$UPGRADE" = "true" ]]; then
+    if [[ "$UPGRADE" == "true" ]]; then
         build_and_test true
     else
         echo "ℹ️ Skipping upgrade path on $distro"

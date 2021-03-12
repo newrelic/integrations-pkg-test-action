@@ -24,11 +24,14 @@ FROM ubuntu-base
 ARG INTEGRATION
 ARG TAG
 ARG PKGDIR=./dist
-ARG UPGRADE=false
+ARG INSTALL_REPO=false
+ARG INSTALL_LOCAL=true
 
 ADD ${PKGDIR} ./dist
 
-RUN if [ "${UPGRADE}" = "true" ]; then\
+RUN if [ "${INSTALL_REPO}" = "true" ]; then \
         apt install -y ${INTEGRATION} || echo "⚠️ Previous version install failed, proceeding anyway"; \
     fi; \
-    apt install -y ./dist/${INTEGRATION}_${TAG}-1_amd64.deb
+    if [ "${INSTALL_LOCAL}" = "true" ]; then \
+        apt install -y "./dist/${INTEGRATION}_${TAG}-1_amd64.deb"; \
+    fi

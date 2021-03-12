@@ -9,6 +9,14 @@ inputs:
     description: 'Name of the integration to test'
     required: true
     default: 'nri-test'
+  packageLocation:
+    description: 'Location of the package to install. Valid options are "local" (dist folder) and "repo" (pulled from it)'
+    required: false
+    default: 'local'
+  stagingRepo:
+    description: 'Set to "true" to use the staging rather than the prod repo, for both upgrade test and install test.'
+    required: false
+    default: 'false'
   upgrade:
     description: 'Whether to test upgrade path as well'
     required: false
@@ -38,6 +46,8 @@ runs:
       env:
         TAG: ${{ inputs.tag }}
         INTEGRATION: ${{ inputs.integration }}
+        PACKAGE_LOCATION: ${{ inputs.packageLocation }}
+        STAGING_REPO: ${{ inputs.stagingRepo }}
         UPGRADE: ${{ inputs.upgrade }}
         POST_INSTALL: ${{ inputs.postInstall }}
         POST_INSTALL_EXTRA: ${{ inputs.postInstallExtra }}
