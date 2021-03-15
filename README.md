@@ -21,11 +21,15 @@ Test local packages produced in the `dist` folder:
 ```
 
 Test packages uploaded to the staging repos:
+
+> Note: When `packageLocation == repo`, `tag` does *not* specify which version is downloaded from the repo (which is always the latest available).
+> However, `tag` will be used to compare against the `-show_version` output and ensure the installed version is the desired one.
+
 ```yaml
 - name: Test staging repo
   uses: newrelic/integrations-pkg-test-action/linux@v1
   with:
-    tag: ${{ env.TAG }} # Does *NOT* specify which version is downloaded from the remote repo, `-show_version` output *WILL* be checked against this.  
+    tag: ${{ env.TAG }}
     integration: 'nri-${{ env.INTEGRATION }}' # Required, with nri- prefix
     stagingRepo: true
     packageLocation: repo
