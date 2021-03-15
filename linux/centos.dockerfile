@@ -25,6 +25,7 @@ ARG INTEGRATION
 ARG TAG
 ARG PKGDIR=./dist
 ARG INSTALL_REPO=false
+ARG FAIL_REPO=false
 ARG INSTALL_LOCAL=true
 
 ADD ${PKGDIR} ./dist
@@ -35,7 +36,7 @@ ADD ${PKGDIR} ./dist
 # Also, complex flow needs to be preceded by "set -e" to exit on error
 RUN set -e && \
     if [ "${INSTALL_REPO}" = "true" ]; then \
-        yum -y install ${INTEGRATION} || ( [ "${INSTALL_LOCAL}" = "true" ] && echo "⚠️ Previous version install failed, proceeding anyway" ); \
+        yum -y install ${INTEGRATION} || ( [ "${FAIL_REPO}" = "false" ] && echo "⚠️ Previous version install failed, proceeding anyway" ); \
     fi; \
     if [ "${INSTALL_LOCAL}" = "true" ]; then \
             yum -y install "./dist/${INTEGRATION}-${TAG}-1.x86_64.rpm"; \

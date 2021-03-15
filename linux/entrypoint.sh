@@ -31,6 +31,8 @@ function build_and_test() {
         install_local=true
         # Install repo package if this is an upgrade test
         install_repo=$upgrade
+        # We're testing locally so we allow failures installing from the repo
+        fail_repo=false
     elif [[ "$PACKAGE_LOCATION" == "repo" ]]; then
         if [[ "$upgrade" == "true" ]]; then
             # Remote package and upgrade, invalid case
@@ -40,6 +42,7 @@ function build_and_test() {
         # Repo package, not upgrade, install repo only
         install_repo=true
         install_local=false
+        fail_repo=true
     else
         echo "❌ Unknown value for PACKAGE_LOCATION '${PACKAGE_LOCATION}'"
         return 1
@@ -60,6 +63,7 @@ function build_and_test() {
         --build-arg INTEGRATION="$INTEGRATION" \
         --build-arg INSTALL_REPO="$install_repo" \
         --build-arg INSTALL_LOCAL="$install_local" \
+        --build-arg FAIL_REPO="$fail_repo" \
         --build-arg PKGDIR="$PKGDIR" \
         --build-arg STAGING_REPO="$STAGING_REPO" \
         .; then

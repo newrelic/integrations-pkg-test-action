@@ -29,6 +29,7 @@ ARG INTEGRATION
 ARG TAG
 ARG PKGDIR=./dist
 ARG INSTALL_REPO=false
+ARG FAIL_REPO=false
 ARG INSTALL_LOCAL=true
 
 ADD ${PKGDIR} ./dist
@@ -39,7 +40,7 @@ ADD ${PKGDIR} ./dist
 # Also, complex flow needs to be preceded by "set -e" to exit on error
 RUN set -e && \
     if [ "${INSTALL_REPO}" = "true" ]; then \
-        apt install -y ${INTEGRATION} || ( [ "${INSTALL_LOCAL}" = "true" ] && echo "⚠️ Previous version install failed, proceeding anyway" ); \
+        apt install -y ${INTEGRATION} || ( [ "${FAIL_REPO}" = "false" ] && echo "⚠️ Previous version install failed, proceeding anyway" ); \
     fi; \
     if [ "${INSTALL_LOCAL}" = "true" ]; then \
         apt install -y "./dist/${INTEGRATION}_${TAG}-1_amd64.deb"; \
