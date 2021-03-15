@@ -14,7 +14,8 @@ add_repo() {
 }
 
 # Installs the agent package without the systemd dependency
-# This is needed because systemd is not available in the docker images, so the post-install script woudl fail
+# This is needed because systemd is not available in the docker images, so the post-install script of
+# the normal package would fail
 install_agent() {
     AGENT_PACKAGE=${AGENT_PACKAGE:-newrelic-infra_upstart_1.15.2_upstart_amd64.deb}
     wget "https://download.newrelic.com/infrastructure_agent/linux/apt/pool/main/n/newrelic-infra/${AGENT_PACKAGE}"
@@ -30,4 +31,3 @@ install_local() {
 install_repo() {
     apt install -y ${INTEGRATION}
 }
-
