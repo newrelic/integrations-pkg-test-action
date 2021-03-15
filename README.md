@@ -59,12 +59,12 @@ Inputs are taken as environment vars, transforming `camelCase` to `UPPERCASE_WIT
 
 Test local packages:
 ```bash
-GITHUB_ACTION_PATH=./linux TAG=v1.3.0 INTEGRATION=nri-snmp ./linux/entrypoint.sh
+GITHUB_ACTION_PATH=./linux TAG=v1.3.0 INTEGRATION=nri-snmp ./linux/action.sh
 ```
 
 Test staging repo packages:
 ```bash
-STAGING_REPO=true PACKAGE_LOCATION=repo PKGDIR=testdata/dist GITHUB_ACTION_PATH=./linux TAG=v1.3.0 INTEGRATION=nri-snmp ./linux/entrypoint.sh
+STAGING_REPO=true PACKAGE_LOCATION=repo PKGDIR=testdata/dist GITHUB_ACTION_PATH=./linux TAG=v1.3.0 INTEGRATION=nri-snmp ./linux/action.sh
 ```
 
 ### `/windows`

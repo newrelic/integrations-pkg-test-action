@@ -24,8 +24,25 @@ fi
 POST_INSTALL="$POST_INSTALL
 $POST_INSTALL_EXTRA"
 
+# Returns the docker image for the specified distro ($1)
+function image_for() {
+    case $1 in
+    "ubuntu")
+        printf "ubuntu:focal"
+        ;;
+    "suse")
+        printf "opensuse/leap"
+        ;;
+    "centos")
+        printf "centos:centos8"
+        ;;
+    esac
+}
+
 function build_and_test() {
     upgrade=$1
+
+    # Decide whether to install locally, from repo, or both based on action inputs
     if [[ "$PACKAGE_LOCATION" == "local" ]]; then
         # Always install local package if location is local
         install_local=true
@@ -56,9 +73,19 @@ function build_and_test() {
 
     dockertag="${INTEGRATION}:${distro}-${TAG}${suffix}"
 
+    # Get base image from distro
+    base_image=$(image_for "$distro")
+    if [[ -z "$base_image" ]]; then
+        echo "❌ Internal error: cannot figure base docker image for '$distro'"
+        return 1
+    fi
+
     echo "ℹ️ Running installation test for $dockertag"
     echo "::group::docker build $dockertag"
-    if ! docker build -t "$dockertag" -f "${GITHUB_ACTION_PATH}/${distro}.dockerfile" \
+    if ! docker build -t "$dockertag" -f "${GITHUB_ACTION_PATH}/Dockerfile" \
+        --build-arg DISTRO="$distro" \
+        --build-arg BASE_IMAGE="$base_image" \
+        --build-arg ACTIONPATH="$GITHUB_ACTION_PATH" \
         --build-arg TAG="$TAG" \
         --build-arg INTEGRATION="$INTEGRATION" \
         --build-arg INSTALL_REPO="$install_repo" \
