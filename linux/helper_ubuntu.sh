@@ -29,5 +29,5 @@ install_local() {
 
 # Install package from repository
 install_repo() {
-    apt install -y ${INTEGRATION}
+    apt install -y "$INTEGRATION"
 }
