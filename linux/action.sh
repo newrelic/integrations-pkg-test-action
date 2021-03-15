@@ -4,7 +4,7 @@ set -o errexit
 set -o pipefail
 
 # Populate defaults
-[[ -n $GITHUB_ACTION_PATH ]] || GITHUB_ACTION_PATH=$(pwd)
+[[ -n $GITHUB_ACTION_PATH ]] || GITHUB_ACTION_PATH="."
 [[ -n $DISTROS ]] || DISTROS="centos suse ubuntu"
 [[ -n $PKGDIR ]] || PKGDIR="./dist"
 [[ -n $PACKAGE_LOCATION ]] || PACKAGE_LOCATION="local"
@@ -85,7 +85,7 @@ function build_and_test() {
     if ! docker build -t "$dockertag" -f "${GITHUB_ACTION_PATH}/Dockerfile" \
         --build-arg DISTRO="$distro" \
         --build-arg BASE_IMAGE="$base_image" \
-        --build-arg ACTIONPATH="$GITHUB_ACTION_PATH" \
+        --build-arg ACTION_PATH="$GITHUB_ACTION_PATH" \
         --build-arg TAG="$TAG" \
         --build-arg INTEGRATION="$INTEGRATION" \
         --build-arg INSTALL_REPO="$install_repo" \
