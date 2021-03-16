@@ -1,4 +1,5 @@
 [![Community Project header](https://github.com/newrelic/opensource-website/raw/master/src/images/categories/Community_Project.png)](https://opensource.newrelic.com/oss-category/#community-project)
+
 # integrations-pkg-test-action
 
 An action to test for correct installation and upgrades of New Relic integration packages.
@@ -9,12 +10,30 @@ It tests clean installation and upgrade for integration packages in CentOS, Suse
 ### `/linux`
 
 Usage and defaults:
+
+Test local packages produced in the `dist` folder:
 ```yaml
-    - name: Test packages installation
-      uses: newrelic/integrations-pkg-test-action/linux@v1
-      with:
-        tag: ${{ env.TAG }} # Required, trailing v is stripped automatically if found
-        integration: 'nri-${{ env.INTEGRATION }}' # Required, with nri- prefix
+- name: Test packages installation
+  uses: newrelic/integrations-pkg-test-action/linux@v1
+  with:
+    tag: ${{ env.TAG }} # Required, trailing v is stripped automatically if found
+    integration: 'nri-${{ env.INTEGRATION }}' # Required, with nri- prefix
+```
+
+Test packages uploaded to the staging repos:
+
+> Note: When `packageLocation == repo`, `tag` does *not* specify which version is downloaded from the repo (which is always the latest available).
+> However, `tag` will be used to compare against the `-show_version` output and ensure the installed version is the desired one.
+
+```yaml
+- name: Test staging repo
+  uses: newrelic/integrations-pkg-test-action/linux@v1
+  with:
+    tag: ${{ env.TAG }}
+    integration: 'nri-${{ env.INTEGRATION }}' # Required, with nri- prefix
+    stagingRepo: true
+    packageLocation: repo
+    upgrade: false # Upgrade path test does not make sense when testing the repo
 ```
 
 #### Extra parameters
@@ -22,15 +41,36 @@ Usage and defaults:
 The following inputs can be specified to override the default behavior
 
 * `upgrade`: Whether to test upgrade path against the version of the same integration in the newrelic repo
-    - default: `true`
+  - default: `true`
 * `postInstallExtra`: Extra checks to run in addition to the default post-install script. This is specified as a multi-line shell script, which is run line-by-line in different containers. A non-zero exit code for any line causes the installation check to fail.
-    - default: empty
+  - default: empty
 * `postInstall`: Override the post-install test script. This is run line-by-line in different containers. A non-zero exit code causes the install check to fail.
-    - default: See `entrypoint.sh`
+  - default: See `entrypoint.sh`
 * `distros`: Space-separated list of distros to run the test on. Supported values are "ubuntu", "suse" and "centos"
-    - default: `centos suse ubuntu`
+  - default: `centos suse ubuntu`
+* `packageLocation`: Whether to test local packages (`local`) or packages from the upstream repo (`repo`). Useful for testing the staging repo.
+  - *Note: Specifying both `packageLocation: repo` and `upgrade: true` is not possible and such combination will be silently ignored.*
+  - default: `local`
+* `stagingRepo`: Pull repo packages from the staging repo rather than production. Useful for testing staging repo packages alone (rather than local).
+  - default: `false`
 * `pkgDir`: Path where archives (.deb and .rpm) reside
-    - default: `./dist`
+  - default: `./dist`
+
+#### Running locally
+
+This action is mainly contained in one shell script (and a few dockerfiles) and can be run in systems which have a bash-compatible shell and docker installed.
+
+Inputs are taken as environment vars, transforming `camelCase` to `UPPERCASE_WITH_UNDERSCORES`. Additionally, `GITHUB_ACTION_PATH` must be specified if WD is not the `linux/` directory.
+
+Test local packages:
+```bash
+GITHUB_ACTION_PATH=./linux TAG=v1.3.0 INTEGRATION=nri-snmp ./linux/action.sh
+```
+
+Test staging repo packages:
+```bash
+STAGING_REPO=true PACKAGE_LOCATION=repo PKGDIR=testdata/dist GITHUB_ACTION_PATH=./linux TAG=v1.3.0 INTEGRATION=nri-snmp ./linux/action.sh
+```
 
 ### `/windows`
 
@@ -48,9 +88,9 @@ Usage and defaults:
 The following inputs can be specified to override the default behavior
 
 * `upgrade`: Whether to test upgrade path against the version of the same integration in the newrelic repo
-    - default: `true`
+  - default: `true`
 * `pkgDir`: Path where archives (.msi) reside
-    - default: `build\package\windows\nri-${ARCH}-installer\bin\Release`
+  - default: `build\package\windows\nri-${ARCH}-installer\bin\Release`
 
 ## Support
 
