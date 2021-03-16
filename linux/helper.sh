@@ -21,7 +21,7 @@ if [ "$1" = "prepare" ]; then
     fi
 
     # Make a dummy systemctl so post-install script does not fail
-    systemctl --version > /dev/null 2> /dev/null || ln -s /bin/true /bin/systemctl
+    test -e /usr/local/bin/systemctl || ln -s /bin/true /usr/local/bin/systemctl
 
     if ! install_agent; then
         echo "❌ Could not install agent package"
