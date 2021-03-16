@@ -89,7 +89,7 @@ function build_and_test() {
     fi
     echo "ℹ️ Copying packages and helper scripts to $tmpdir"
     mkdir "${tmpdir}/dist"
-    cp "$PKGDIR/*" "${tmpdir}/dist" || echo "⚠️ Could not copy packages from $PKGDIR"
+    cp "$PKGDIR"/* "${tmpdir}/dist" || echo "⚠️ Could not copy packages from $PKGDIR"
     cp "$GITHUB_ACTION_PATH"/helper*.sh "$tmpdir"
 
     echo "ℹ️ Running installation test for $dockertag"
