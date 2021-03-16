@@ -82,15 +82,15 @@ function build_and_test() {
 
     # Docker needs to copy both user-supplied items (packages) and action-supplied items (helper*.sh scripts)
     # Since build context is tied to the WD for `docker run`, we need to create a temp dir and copy both things there
-    tmpdir=$(mktemp -d || true)
-    if [[ -z "$tmpdir" ]]; then
+    dockerdir=$(mktemp -d || true)
+    if [[ -z "$dockerdir" ]]; then
         echo "❌ Internal error: could not create temp dir with mktemp"
         return 1
     fi
-    echo "ℹ️ Copying packages and helper scripts to $tmpdir"
-    mkdir "${tmpdir}/dist"
-    cp "$PKGDIR"/* "${tmpdir}/dist" || echo "⚠️ Could not copy packages from $PKGDIR"
-    cp "$GITHUB_ACTION_PATH"/helper*.sh "$tmpdir"
+    echo "ℹ️ Copying packages and helper scripts to $dockerdir"
+    mkdir "${dockerdir}/dist"
+    cp "$PKGDIR"/* "${dockerdir}/dist" || echo "⚠️ Could not copy packages from $PKGDIR"
+    cp "$GITHUB_ACTION_PATH"/helper*.sh "$dockerdir"
 
     echo "ℹ️ Running installation test for $dockertag"
     echo "::group::docker build $dockertag"
@@ -103,7 +103,7 @@ function build_and_test() {
         --build-arg INSTALL_LOCAL="$install_local" \
         --build-arg FAIL_REPO="$fail_repo" \
         --build-arg STAGING_REPO="$STAGING_REPO" \
-        "$tmpdir"; then
+        "$dockerdir"; then
         echo "::endgroup::"
         echo "❌ Install for $dockertag failed"
         return 1
