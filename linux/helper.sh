@@ -11,7 +11,7 @@ fi
 
 # Distro-specific scripts define add_repo, install_agent, install_local and install_repo functions
 # shellcheck source=helper_ubuntu.sh
-. "/helper_${DISTRO}.sh"
+. "./helper_${DISTRO}.sh"
 
 # Prepare step: Add NR repo and dependencies
 if [ "$1" = "prepare" ]; then
