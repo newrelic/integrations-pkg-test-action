@@ -40,5 +40,6 @@ jobs:
           integration: 'nri-snmp'
           upgrade: false
           packageLocation: 'repo'
+          pkgDir: testdata/dist # PKGDir must exist or docker will fail to `COPY` things
           stagingRepo: true
           distros: ${{ matrix.distro }}
