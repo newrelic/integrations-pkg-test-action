@@ -14,6 +14,7 @@ add_repo() {
 }
 
 install_agent() {
+    ln -s /bin/true /bin/systemctl || true # Dummy systemctl so post-install script does not fail
     zypper -n install newrelic-infra
 }
 
