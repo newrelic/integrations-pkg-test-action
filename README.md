@@ -33,6 +33,7 @@ Test packages uploaded to the staging repos:
     integration: 'nri-${{ env.INTEGRATION }}' # Required, with nri- prefix
     stagingRepo: true
     packageLocation: repo
+    upgrade: false # Upgrade path test does not make sense when testing the repo
 ```
 
 #### Extra parameters
