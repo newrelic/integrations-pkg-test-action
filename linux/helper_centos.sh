@@ -15,10 +15,6 @@ add_repo() {
 }
 
 install_agent() {
-    # CentOS needs extra care since it seems to invoke systemctl from its absolute path
-    rm /usr/bin/systemctl || true
-    ln -s /bin/true /usr/bin/systemctl
-
     yum -y install newrelic-infra
 }
 

@@ -21,7 +21,8 @@ if [ "$1" = "prepare" ]; then
     fi
 
     # Make a dummy systemctl so post-install script does not fail
-    test -e /usr/local/bin/systemctl || ln -s /bin/true /usr/local/bin/systemctl
+    test ! -e /bin/systemctl || mv /bin/systemctl /bin/systemctl.bak
+    ln -s /bin/true /bin/systemctl
 
     if ! install_agent; then
         echo "❌ Could not install agent package"
@@ -30,7 +31,6 @@ if [ "$1" = "prepare" ]; then
 elif [ "$1" = "install" ]; then
     if [ "${INSTALL_REPO}" = "true" ]; then
         if ! install_repo; then
-            echo "FAIL_REPO=${FAIL_REPO}"
             if [ "${FAIL_REPO}" = "true" ]; then
                 echo "❌ Error installing $INTEGRATION from repo"
                 exit 3
