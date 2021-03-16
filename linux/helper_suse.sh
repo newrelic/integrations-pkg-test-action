@@ -6,9 +6,9 @@ add_repo() {
         repo="https://download.newrelic.com/infrastructure_agent/linux/zypp/sles/12.4/x86_64/newrelic-infra.repo"
     fi
 
-    zypper -n install wget gnupg curl
-    curl -o /etc/zypp/repos.d/newrelic-infra.repo $repo
-    curl https://download.newrelic.com/infrastructure_agent/gpg/newrelic-infra.gpg -s |  gpg --import
+    zypper -n install wget gnupg
+    wget -nv -O /etc/zypp/repos.d/newrelic-infra.repo $repo
+    wget -nv -O- https://download.newrelic.com/infrastructure_agent/gpg/newrelic-infra.gpg |  gpg --import
     zypper --gpg-auto-import-keys ref
     zypper -n ref -r newrelic-infra
 }
