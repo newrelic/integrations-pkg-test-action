@@ -9,7 +9,7 @@ add_repo() {
         repo="https://download.newrelic.com/infrastructure_agent/linux/yum/el/8/x86_64/newrelic-infra.repo"
     fi
 
-    wget -O /etc/yum.repos.d/newrelic-infra.repo "$repo"
+    wget -nv -O /etc/yum.repos.d/newrelic-infra.repo "$repo"
     yum -q makecache -y --disablerepo='*' --enablerepo='newrelic-infra'
     yum update -y
 }

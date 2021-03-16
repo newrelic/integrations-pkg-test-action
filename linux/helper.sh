@@ -11,7 +11,7 @@ fi
 
 # Distro-specific scripts define add_repo, install_agent, install_local and install_repo functions
 # shellcheck source=helper_ubuntu.sh
-. "/helper_${DISTRO}.sh"
+. "./helper_${DISTRO}.sh"
 
 # Prepare step: Add NR repo and dependencies
 if [ "$1" = "prepare" ]; then
@@ -20,6 +20,10 @@ if [ "$1" = "prepare" ]; then
         exit 1
     fi
 
+    # Make a dummy systemctl so post-install script does not fail
+    test ! -e /bin/systemctl || mv /bin/systemctl /bin/systemctl.bak
+    ln -s /bin/true /bin/systemctl
+
     if ! install_agent; then
         echo "❌ Could not install agent package"
         exit 2
@@ -27,7 +31,6 @@ if [ "$1" = "prepare" ]; then
 elif [ "$1" = "install" ]; then
     if [ "${INSTALL_REPO}" = "true" ]; then
         if ! install_repo; then
-            echo "FAIL_REPO=${FAIL_REPO}"
             if [ "${FAIL_REPO}" = "true" ]; then
                 echo "❌ Error installing $INTEGRATION from repo"
                 exit 3

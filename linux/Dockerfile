@@ -1,23 +1,25 @@
 ARG BASE_IMAGE
 FROM $BASE_IMAGE as base
 
+WORKDIR /integration
+
 ARG DISTRO
 ENV DISTRO=$DISTRO
 
-ARG ACTION_PATH=.
-COPY $ACTION_PATH/helper*.sh /
+# Copy helper scripts
+COPY helper*.sh ./
 
 ARG STAGING_REPO=false
 ENV STAGING_REPO=$STAGING_REPO
 
 # Run helper prepare. This adds the NR repo and installs the agent
-RUN /helper.sh prepare
+RUN ./helper.sh prepare
 
 
 FROM base
 
-ARG PKGDIR=./dist
-COPY ${PKGDIR} ./dist
+# Copy packages to be tested
+COPY ./dist ./dist
 
 ARG INTEGRATION
 ARG TAG
@@ -37,4 +39,4 @@ RUN INTEGRATION=$INTEGRATION \
     INSTALL_REPO=$INSTALL_REPO \
     FAIL_REPO=$FAIL_REPO \
     INSTALL_LOCAL=$INSTALL_LOCAL \
-    /helper.sh install
+    ./helper.sh install

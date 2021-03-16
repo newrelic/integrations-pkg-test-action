@@ -7,6 +7,10 @@ on:
       - main
   pull_request:
 
+# ATTENTION
+# This is a self-test pipeline and it is *NOT* intended to be used as a base/quickstart on how to
+# use the action. Please refer to the examples in the README.md file for that
+
 jobs:
   linux-local:
     runs-on: ubuntu-latest
@@ -36,8 +40,8 @@ jobs:
       - name: Test staging package on ${{ matrix.distro }}
         uses: ./linux
         with:
-          tag: '1'
-          integration: 'nri-snmp'
+          tag: '.' # Match anything, just for testing
+          integration: 'nri-haproxy'
           upgrade: false
           packageLocation: 'repo'
           pkgDir: testdata/dist # PKGDir must exist or docker will fail to `COPY` things
