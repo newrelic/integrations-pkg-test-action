@@ -4,8 +4,8 @@ FROM $BASE_IMAGE as base
 ARG DISTRO
 ENV DISTRO=$DISTRO
 
-ARG ACTION_PATH=.
-COPY $ACTION_PATH/helper*.sh /
+# Copy helper scripts
+COPY helper*.sh /
 
 ARG STAGING_REPO=false
 ENV STAGING_REPO=$STAGING_REPO
@@ -16,8 +16,8 @@ RUN /helper.sh prepare
 
 FROM base
 
-ARG PKGDIR=./dist
-COPY ${PKGDIR} ./dist
+# Copy packages to be tested
+COPY ./dist ./dist
 
 ARG INTEGRATION
 ARG TAG
