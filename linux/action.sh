@@ -92,10 +92,12 @@ function build_and_test() {
     # If we want to install local packages, copy them as well
     if [[ "$install_local" == "true" ]]; then
         echo "ℹ️ Copying packages from $PKGDIR to $dockerdir"
-        if ! cp "$PKGDIR"/* "${dockerdir}/dist"; then
-            echo "❌ Internal error: could not copy packages from PKGDIR=${PKGDIR} to ${dockerdir}/dist"
-            return 1
-        fi
+        find "$PKGDIR" -type f -maxdepth 1 | while read -r package; do
+            if ! cp "$package" "${dockerdir}/dist/"; then
+                echo "❌ Internal error: could not copy packages from PKGDIR=${PKGDIR} to ${dockerdir}/dist"
+                return 1
+            fi
+        done
     fi
 
     echo "ℹ️ Running installation test for $dockertag"
