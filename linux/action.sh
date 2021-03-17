@@ -87,10 +87,17 @@ function build_and_test() {
         echo "❌ Internal error: could not create temp dir with mktemp"
         return 1
     fi
-    echo "ℹ️ Copying packages and helper scripts to $dockerdir"
+    echo "ℹ️ Copying helper scripts to $dockerdir"
     mkdir "${dockerdir}/dist"
-    cp "$PKGDIR"/* "${dockerdir}/dist" || echo "⚠️ Could not copy packages from $PKGDIR"
-    cp "$GITHUB_ACTION_PATH"/helper*.sh "$dockerdir"
+    cp "$GITHUB_ACTION_PATH"/helper*.sh "$dockerdir" # Copy helpers
+    # If we want to install local packages, copy them as well
+    if [[ "$install_local" == "true" ]]; then
+        echo "ℹ️ Copying packages from $PKGDIR to $dockerdir"
+        if ! cp "$PKGDIR"/* "${dockerdir}/dist"; then
+            echo "❌ Internal error: could not copy packages from PKGDIR=${PKGDIR} to ${dockerdir}/dist"
+            return 1
+        fi
+    fi
 
     echo "ℹ️ Running installation test for $dockertag"
     echo "::group::docker build $dockertag"
