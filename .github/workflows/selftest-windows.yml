@@ -12,27 +12,19 @@ jobs:
     runs-on: windows-2019
     name: A job to test created packages
     strategy:
-      fail-fast: false
       matrix:
         goarch: [amd64,386]
         # We need a clean runner (not using containers here) to execute each installation test type.
         test-upgrade: [true,false]
     steps:
       - uses: actions/checkout@v2
-      - name: Simulating Build
-        shell: pwsh
-        run: |
-          New-Item -Name "test" -ItemType "directory"
-          [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-          Invoke-WebRequest "https://github.com/newrelic/nri-vsphere/releases/download/v3.0.1/nri-vsphere-${{ matrix.goarch }}.3.0.1.msi" -OutFile "test\nri-vsphere-${{ matrix.goarch }}.3.0.1.msi"
-          ls .\test\
       - uses: ./windows
         with:
           tag: 'v3.0.1'
-          integration: 'nri-vsphere'
+          integration: 'nri-haproxy'
           arch: ${{ matrix.goarch }}
           upgrade: ${{ matrix.test-upgrade }}
-          pkgDir: test
+          pkgDir: testdata/windows
 
   exe-package:
     runs-on: windows-2019
