@@ -8,7 +8,7 @@ on:
   pull_request:
 
 jobs:
-  windows:
+  msi-package:
     runs-on: windows-2019
     name: A job to test created packages
     strategy:
@@ -17,10 +17,6 @@ jobs:
         goarch: [amd64,386]
         # We need a clean runner (not using containers here) to execute each installation test type.
         test-upgrade: [true,false]
-        exclude:
-          #386 packages are not available for integrations. This should be removed after the first package is uploaded.
-          - goarch: 386
-            test-upgrade: true  
     steps:
       - uses: actions/checkout@v2
       - name: Simulating Build
@@ -37,3 +33,17 @@ jobs:
           arch: ${{ matrix.goarch }}
           upgrade: ${{ matrix.test-upgrade }}
           pkgDir: test
+
+  exe-package:
+    runs-on: windows-2019
+    name: Test exe packages
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./windows
+        with:
+          tag: 'v9.9.9'
+          integration: 'nri-cassandra'
+          arch: amd64
+          upgrade: false
+          pkgDir: testdata/windows
+          pkgName: "nri-cassandra-amd64-installer.9.9.9.exe"
