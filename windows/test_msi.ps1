@@ -6,7 +6,7 @@ param (
     [string]$UPGRADE="false", # upgrade: upgrade msi from last released version.
     [string]$MSI_PATH="",
     [string]$MSI_FILE_NAME="",
-    [string]$LATEST_MSI_NAME=""
+    [string]$LATEST_MSI_NAME="",
     [string]$LATEST_MSI_URL=""
 )
 
@@ -55,6 +55,7 @@ if($MSI_FILE_NAME -eq "")
     $MSI_FILE_NAME="${INTEGRATION}-${ARCH}.${version}.msi"   
 }
 $msi_name = "${MSI_PATH}\${MSI_FILE_NAME}"
+echo $msi_name
 write-host "===> Installing generated msi: ${msi_name}"
 if( $out -notlike "*.msi"){
     $p = Start-Process ${msi_name} -Wait -PassThru -ArgumentList "/s /l installer_log"
