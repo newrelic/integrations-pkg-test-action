@@ -66,7 +66,15 @@ if ($UPGRADE -eq "true")
 $version = "$TAG" -replace "v", ""
 if ($PKG_DIR -eq "")
 {
-    $PKG_DIR = "src\github.com\newrelic\${INTEGRATION}\build\package\windows\nri-${ARCH}-installer\bin\Release"
+    # Default path also differs depending on the package type
+    if ($PKG_TYPE -eq "msi")
+    {
+        $PKG_DIR = "src\github.com\newrelic\${INTEGRATION}\build\package\windows\nri-${ARCH}-installer\bin\Release"
+    }
+    elseif ($PKG_TYPE -eq "exe")
+    {
+        $PKG_DIR = "src\github.com\newrelic\${INTEGRATION}\build\package\windows\bundle\bin\Release"
+    }
 }
 if ($PKG_NAME -eq "")
 {
