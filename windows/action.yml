@@ -17,6 +17,10 @@ inputs:
     description: 'Wether to test upgrade path as well'
     required: false
     default: "false"
+  pkgType:
+    description: 'Installer type. Valid values are "msi" (default) and "exe"'
+    required: false
+    default: "msi"
   pkgDir:
     description: 'Folder containing installer packages'
     required: false
@@ -25,12 +29,12 @@ inputs:
     description: 'Installer file name'
     required: false
     default: ""
-  pkgLatestName:
+  pkgUpstreamName:
     description: 'Latest installer file name'
     required: false
     default: ""
-  pkgLatestURL:
-    description: 'Latest installer URL'
+  pkgUpstreamBaseURL:
+    description: 'Path to the upstream URL of the package. Will be concatenated with pkgUpstreamName to get the full URL'
     required: false
     default: ""
 
@@ -38,5 +42,5 @@ runs:
   using: "composite"
   steps: 
     - run: |
-        ${{ github.action_path }}\test_msi.ps1 ${{ inputs.integration }} ${{ inputs.arch }} ${{ inputs.tag }} ${{ inputs.upgrade }} ${{ inputs.pkgDir }} ${{ inputs.pkgName }} ${{ inputs.pkgLatestName }} ${{ inputs.pkgLatestURL }}
+        ${{ github.action_path }}\test_msi.ps1 ${{ inputs.integration }} ${{ inputs.arch }} ${{ inputs.tag }} ${{ inputs.upgrade }} ${{ inputs.pkgType }} ${{ inputs.pkgDir }} ${{ inputs.pkgName }} ${{ inputs.pkgUpstreamBaseURL }} ${{ inputs.pkgLatestName }}
       shell: pwsh
