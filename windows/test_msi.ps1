@@ -20,7 +20,7 @@ if ($PKG_UPSTREAM_NAME -eq "")
 {
     if ($PKG_TYPE -eq "msi")
     {
-        $PKG_UPSTREAM_NAME = "${INTEGRATION}-${ARCH}.msi"`
+        $PKG_UPSTREAM_NAME = "${INTEGRATION}-${ARCH}.msi"
     }
     else
     {
@@ -81,7 +81,7 @@ if ($PKG_NAME -eq "")
     }
     else
     {
-        $PKG_NAME = "${INTEGRATION}-${ARCH}-installer.${version}.msi"
+        $PKG_NAME = "${INTEGRATION}-${ARCH}-installer.${version}.exe"
     }
 }
 $PKG_PATH = "${PKG_DIR}\${PKG_NAME}"
