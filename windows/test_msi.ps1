@@ -32,7 +32,7 @@ if ($UPGRADE -eq "true")
         exit 0
     }
 
-    write-host "ℹ️ Installing latest released version of msi from ${LATEST_MSI_URL}"
+    write-host "::group::ℹ️ Installing latest released version of msi from ${LATEST_MSI_URL}"
     if ($out -notlike "*.msi")
     {
         $p = Start-Process ${LATEST_MSI_NAME} -Wait -PassThru -ArgumentList "/s /l installer_log"
@@ -41,7 +41,6 @@ if ($UPGRADE -eq "true")
     {
         $p = Start-Process msiexec.exe -Wait -PassThru -ArgumentList "/qn /L*v installer_log /i ${LATEST_MSI_NAME}"
     }
-    write-host "::group::Installer log"
     Get-Content -Path .\installer_log
     write-host "::endgroup::"
     if ($p.ExitCode -ne 0)
@@ -49,6 +48,7 @@ if ($UPGRADE -eq "true")
         echo "❌ Failed installing latest version of the msi"
         exit 1
     }
+    echo "✅ Installation for ${LATEST_MSI_NAME} succeeded"
 }
 
 $version = $TAG -replace "v", ""
@@ -61,8 +61,7 @@ if ($MSI_FILE_NAME -eq "")
     $MSI_FILE_NAME = "${INTEGRATION}-${ARCH}.${version}.msi"
 }
 $msi_name = "${MSI_PATH}\${MSI_FILE_NAME}"
-echo $msi_name
-write-host "ℹ️ Installing generated msi: ${msi_name}"
+write-host "::group::ℹ️ Installing generated msi: ${msi_name}"
 if ($out -notlike "*.msi")
 {
     $p = Start-Process ${msi_name} -Wait -PassThru -ArgumentList "/s /l installer_log"
@@ -71,7 +70,6 @@ else
 {
     $p = Start-Process msiexec.exe -Wait -PassThru -ArgumentList "/qn /L*v installer_log /i ${msi_name}"
 }
-write-host "::group::Installer log"
 Get-Content -Path .\installer_log
 write-host "::endgroup::"
 
@@ -80,6 +78,7 @@ if ($p.ExitCode -ne 0)
     echo "❌ Failed installing the msi"
     exit 1
 }
+echo "✅ Installation for ${msi_name} succeeded"
 
 $nr_base_dir = "${env:ProgramFiles}\New Relic\newrelic-infra"
 if ($ARCH -eq "386")
@@ -88,11 +87,13 @@ if ($ARCH -eq "386")
 }
 $bin_installed = "${nr_base_dir}\newrelic-integrations\bin\${INTEGRATION}.exe"
 
-write-host "ℹ️ Check binary version: ${bin_installed}"
+write-host "::group::ℹ️ Check binary version: ${bin_installed}"
 $out = & ${bin_installed} "-show_version" 2>&1
 write-host "$out"
+write-host "::endgroup::"
 if ($out -notlike "*${version}*")
 {
     echo "❌ Failed checking binary version"
     exit 1
 }
+echo "✅ Version check succeeded"
