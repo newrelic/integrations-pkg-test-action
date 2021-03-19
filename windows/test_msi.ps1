@@ -68,7 +68,7 @@ if ($UPGRADE -eq "true")
     echo "✅ Installation for ${PKG_UPSTREAM_NAME} succeeded"
 }
 
-$version = $TAG -replace "v", ""
+$version = "$TAG" -replace "v", ""
 if ($PKG_DIR -eq "")
 {
     $PKG_DIR = "src\github.com\newrelic\${INTEGRATION}\build\package\windows\nri-${ARCH}-installer\bin\Release"
