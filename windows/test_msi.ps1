@@ -3,6 +3,7 @@ param (
     [string]$ARCH = "amd64",
     [string]$TAG = "v0.0.0",
     [string]$UPGRADE = "false", # upgrade: upgrade msi from last released version.
+    [ValidateSet("msi", "exe")]
     [string]$PKG_TYPE = "msi",
     [string]$PKG_DIR = "",
     [string]$PKG_NAME = "",
@@ -10,19 +11,13 @@ param (
     [string]$PKG_UPSTREAM_NAME = ""
 )
 
-if ($PKG_TYPE -ne "msi" -and $PKG_TYPE -ne "exe")
-{
-    echo "❌ pkgType ${PKG_TYPE} is not supported, only 'msi' and 'exe' are allowed"
-    exit 1
-}
-
 if ($PKG_UPSTREAM_NAME -eq "")
 {
     if ($PKG_TYPE -eq "msi")
     {
         $PKG_UPSTREAM_NAME = "${INTEGRATION}-${ARCH}.msi"
     }
-    else
+    elseif ($PKG_TYPE -eq "exe")
     {
         $PKG_UPSTREAM_NAME = "${INTEGRATION}-${ARCH}-installer.exe"
     }
@@ -54,7 +49,7 @@ if ($UPGRADE -eq "true")
     {
         $p = Start-Process "$PKG_UPSTREAM_NAME" -Wait -PassThru -ArgumentList "/s /l installer_log"
     }
-    else
+    elseif ($PKG_TYPE -eq "msi")
     {
         $p = Start-Process msiexec.exe -Wait -PassThru -ArgumentList "/qn /L*v installer_log /i $PKG_UPSTREAM_NAME"
     }
@@ -79,18 +74,19 @@ if ($PKG_NAME -eq "")
     {
         $PKG_NAME = "${INTEGRATION}-${ARCH}.${version}.msi"
     }
-    else
+    elseif ($PKG_TYPE -eq "exe")
     {
         $PKG_NAME = "${INTEGRATION}-${ARCH}-installer.${version}.exe"
     }
 }
-$PKG_PATH = "${PKG_DIR}\${PKG_NAME}"
+$PKG_PATH = Join-Path -Path "$PKG_DIR" -ChildPath "$PKG_NAME"
+
 write-host "::group::ℹ️ Installing generated msi: ${PKG_PATH}"
 if ($PKG_TYPE -eq "exe")
 {
     $p = Start-Process "$PKG_PATH" -Wait -PassThru -ArgumentList "/s /l installer_log"
 }
-else
+elseif ($PKG_TYPE -eq "msi")
 {
     $p = Start-Process msiexec.exe -Wait -PassThru -ArgumentList "/qn /L*v installer_log /i ${PKG_PATH}"
 }
