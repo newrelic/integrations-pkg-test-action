@@ -20,7 +20,7 @@ if ($LATEST_MSI_URL -eq "")
 
 if ($UPGRADE -eq "true")
 {
-    write-host "===> Downloading latest released version of msi from ${LATEST_MSI_URL}"
+    write-host "ℹ️ Downloading latest released version of msi from ${LATEST_MSI_URL}"
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
     try
     {
@@ -32,7 +32,7 @@ if ($UPGRADE -eq "true")
         exit 0
     }
 
-    write-host "===> Installing latest released version of msi from ${LATEST_MSI_URL}"
+    write-host "ℹ️ Installing latest released version of msi from ${LATEST_MSI_URL}"
     if ($out -notlike "*.msi")
     {
         $p = Start-Process ${LATEST_MSI_NAME} -Wait -PassThru -ArgumentList "/s /l installer_log"
@@ -41,13 +41,14 @@ if ($UPGRADE -eq "true")
     {
         $p = Start-Process msiexec.exe -Wait -PassThru -ArgumentList "/qn /L*v installer_log /i ${LATEST_MSI_NAME}"
     }
+    write-host "::group::Installer log"
+    Get-Content -Path .\installer_log
+    write-host "::endgroup::"
     if ($p.ExitCode -ne 0)
     {
-        Get-Content -Path .\installer_log
-        echo "Failed installing latest version of the msi"
+        echo "❌ Failed installing latest version of the msi"
         exit 1
     }
-
 }
 
 $version = $TAG -replace "v", ""
@@ -61,7 +62,7 @@ if ($MSI_FILE_NAME -eq "")
 }
 $msi_name = "${MSI_PATH}\${MSI_FILE_NAME}"
 echo $msi_name
-write-host "===> Installing generated msi: ${msi_name}"
+write-host "ℹ️ Installing generated msi: ${msi_name}"
 if ($out -notlike "*.msi")
 {
     $p = Start-Process ${msi_name} -Wait -PassThru -ArgumentList "/s /l installer_log"
@@ -70,10 +71,13 @@ else
 {
     $p = Start-Process msiexec.exe -Wait -PassThru -ArgumentList "/qn /L*v installer_log /i ${msi_name}"
 }
+write-host "::group::Installer log"
+Get-Content -Path .\installer_log
+write-host "::endgroup::"
+
 if ($p.ExitCode -ne 0)
 {
-    Get-Content -Path .\installer_log
-    echo "Failed installing the msi"
+    echo "❌ Failed installing the msi"
     exit 1
 }
 
@@ -84,10 +88,11 @@ if ($ARCH -eq "386")
 }
 $bin_installed = "${nr_base_dir}\newrelic-integrations\bin\${INTEGRATION}.exe"
 
-write-host "===> Check binary version: ${bin_installed}"
+write-host "ℹ️ Check binary version: ${bin_installed}"
 $out = & ${bin_installed} "-show_version" 2>&1
+write-host "$out"
 if ($out -notlike "*${version}*")
 {
-    echo "Failed checking binary version"
+    echo "❌ Failed checking binary version"
     exit 1
 }
