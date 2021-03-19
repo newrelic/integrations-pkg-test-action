@@ -21,10 +21,22 @@ inputs:
     description: 'Folder containing installer packages'
     required: false
     default: ""
+  pkgName:
+    description: 'Installer file name'
+    required: false
+    default: ""
+  pkgLatestName:
+    description: 'Latest installer file name'
+    required: false
+    default: ""
+  pkgLatestURL:
+    description: 'Latest installer URL'
+    required: false
+    default: ""
 
 runs:
   using: "composite"
   steps: 
     - run: |
-        ${{ github.action_path }}\test_msi.ps1 ${{ inputs.integration }} ${{ inputs.arch }} ${{ inputs.tag }} ${{ inputs.upgrade }} ${{ inputs.pkgDir }}
+        ${{ github.action_path }}\test_msi.ps1 ${{ inputs.integration }} ${{ inputs.arch }} ${{ inputs.tag }} ${{ inputs.upgrade }} ${{ inputs.pkgDir }} ${{ inputs.pkgName }} ${{ inputs.pkgLatestName }} ${{ inputs.pkgLatestURL }}
       shell: pwsh
