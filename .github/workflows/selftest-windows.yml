@@ -24,7 +24,7 @@ jobs:
           integration: 'nri-haproxy'
           arch: ${{ matrix.goarch }}
           upgrade: ${{ matrix.test-upgrade }}
-          pkgDir: testdata/windows
+          pkgDir: 'testdata\windows'
 
   exe-package:
     runs-on: windows-2019
@@ -37,5 +37,5 @@ jobs:
           integration: 'nri-cassandra'
           arch: amd64
           upgrade: false
-          pkgDir: testdata/windows
+          pkgDir: 'testdata\windows'
           pkgName: "nri-cassandra-amd64-installer.9.9.9.exe"
