@@ -33,13 +33,13 @@ if ($UPGRADE -eq "true")
     }
 
     write-host "::group::ℹ️ Installing latest released version of msi from ${LATEST_MSI_URL}"
-    if (${INSTALLER} -notlike "*.msi")
+    if ($INSTALLER -notlike "*.msi")
     {
-        $p = Start-Process ${INSTALLER} -Wait -PassThru -ArgumentList "/s /l installer_log"
+        $p = Start-Process "$INSTALLER" -Wait -PassThru -ArgumentList "/s /l installer_log"
     }
     else
     {
-        $p = Start-Process msiexec.exe -Wait -PassThru -ArgumentList "/qn /L*v installer_log /i ${INSTALLER}"
+        $p = Start-Process msiexec.exe -Wait -PassThru -ArgumentList "/qn /L*v installer_log /i $INSTALLER"
     }
     Get-Content -Path .\installer_log
     write-host "::endgroup::"
@@ -62,9 +62,9 @@ if ($MSI_FILE_NAME -eq "")
 }
 $installer = "${MSI_PATH}\${MSI_FILE_NAME}"
 write-host "::group::ℹ️ Installing generated msi: ${installer}"
-if (${installer} -notlike "*.msi")
+if ($installer -notlike "*.msi")
 {
-    $p = Start-Process ${installer} -Wait -PassThru -ArgumentList "/s /l installer_log"
+    $p = Start-Process "$installer" -Wait -PassThru -ArgumentList "/s /l installer_log"
 }
 else
 {
@@ -88,7 +88,7 @@ if ($ARCH -eq "386")
 $bin_installed = "${nr_base_dir}\newrelic-integrations\bin\${INTEGRATION}.exe"
 
 write-host "::group::ℹ️ Check binary version: ${bin_installed}"
-$out = & ${bin_installed} "-show_version" 2>&1
+$out = & "${bin_installed} -show_version" 2>&1
 write-host "$out"
 write-host "::endgroup::"
 if ($out -notlike "*${version}*")
