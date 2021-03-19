@@ -5,17 +5,17 @@ param (
     [string]$UPGRADE = "false", # upgrade: upgrade msi from last released version.
     [string]$MSI_PATH = "",
     [string]$MSI_FILE_NAME = "",
-    [string]$LATEST_MSI_NAME = "",
+    [string]$INSTALLER = "",
     [string]$LATEST_MSI_URL = ""
 )
 
-if ($LATEST_MSI_NAME -eq "")
+if ($INSTALLER -eq "")
 {
-    $LATEST_MSI_NAME = "${INTEGRATION}-${ARCH}.msi"
+    $INSTALLER = "${INTEGRATION}-${ARCH}.msi"
 }
 if ($LATEST_MSI_URL -eq "")
 {
-    $LATEST_MSI_URL = "https://download.newrelic.com/infrastructure_agent/windows/integrations/${INTEGRATION}/${LATEST_MSI_NAME}"
+    $LATEST_MSI_URL = "https://download.newrelic.com/infrastructure_agent/windows/integrations/${INTEGRATION}/${INSTALLER}"
 }
 
 if ($UPGRADE -eq "true")
@@ -24,7 +24,7 @@ if ($UPGRADE -eq "true")
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
     try
     {
-        Invoke-WebRequest "${LATEST_MSI_URL}" -OutFile "${LATEST_MSI_NAME}"
+        Invoke-WebRequest "${LATEST_MSI_URL}" -OutFile "${INSTALLER}"
     }
     catch
     {
@@ -33,13 +33,13 @@ if ($UPGRADE -eq "true")
     }
 
     write-host "::group::ℹ️ Installing latest released version of msi from ${LATEST_MSI_URL}"
-    if ($out -notlike "*.msi")
+    if (${INSTALLER} -notlike "*.msi")
     {
-        $p = Start-Process ${LATEST_MSI_NAME} -Wait -PassThru -ArgumentList "/s /l installer_log"
+        $p = Start-Process ${INSTALLER} -Wait -PassThru -ArgumentList "/s /l installer_log"
     }
     else
     {
-        $p = Start-Process msiexec.exe -Wait -PassThru -ArgumentList "/qn /L*v installer_log /i ${LATEST_MSI_NAME}"
+        $p = Start-Process msiexec.exe -Wait -PassThru -ArgumentList "/qn /L*v installer_log /i ${INSTALLER}"
     }
     Get-Content -Path .\installer_log
     write-host "::endgroup::"
@@ -48,7 +48,7 @@ if ($UPGRADE -eq "true")
         echo "❌ Failed installing latest version of the msi"
         exit 1
     }
-    echo "✅ Installation for ${LATEST_MSI_NAME} succeeded"
+    echo "✅ Installation for ${INSTALLER} succeeded"
 }
 
 $version = $TAG -replace "v", ""
@@ -60,15 +60,15 @@ if ($MSI_FILE_NAME -eq "")
 {
     $MSI_FILE_NAME = "${INTEGRATION}-${ARCH}.${version}.msi"
 }
-$msi_name = "${MSI_PATH}\${MSI_FILE_NAME}"
-write-host "::group::ℹ️ Installing generated msi: ${msi_name}"
-if ($out -notlike "*.msi")
+$installer = "${MSI_PATH}\${MSI_FILE_NAME}"
+write-host "::group::ℹ️ Installing generated msi: ${installer}"
+if (${installer} -notlike "*.msi")
 {
-    $p = Start-Process ${msi_name} -Wait -PassThru -ArgumentList "/s /l installer_log"
+    $p = Start-Process ${installer} -Wait -PassThru -ArgumentList "/s /l installer_log"
 }
 else
 {
-    $p = Start-Process msiexec.exe -Wait -PassThru -ArgumentList "/qn /L*v installer_log /i ${msi_name}"
+    $p = Start-Process msiexec.exe -Wait -PassThru -ArgumentList "/qn /L*v installer_log /i ${installer}"
 }
 Get-Content -Path .\installer_log
 write-host "::endgroup::"
@@ -78,7 +78,7 @@ if ($p.ExitCode -ne 0)
     echo "❌ Failed installing the msi"
     exit 1
 }
-echo "✅ Installation for ${msi_name} succeeded"
+echo "✅ Installation for ${installer} succeeded"
 
 $nr_base_dir = "${env:ProgramFiles}\New Relic\newrelic-infra"
 if ($ARCH -eq "386")

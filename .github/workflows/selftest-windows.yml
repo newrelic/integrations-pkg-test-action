@@ -32,6 +32,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: ./windows
+        timeout-minutes: 10
         with:
           tag: 'v9.9.9'
           integration: 'nri-cassandra'
