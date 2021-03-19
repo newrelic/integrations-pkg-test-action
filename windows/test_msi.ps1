@@ -3,43 +3,43 @@ param (
     [string]$ARCH = "amd64",
     [string]$TAG = "v0.0.0",
     [string]$UPGRADE = "false", # upgrade: upgrade msi from last released version.
-    [string]$MSI_PATH = "",
-    [string]$MSI_FILE_NAME = "",
-    [string]$INSTALLER = "",
-    [string]$LATEST_MSI_URL = ""
+    [string]$PKG_DIR = "",
+    [string]$PKG_NAME = "",
+    [string]$PKG_LATEST_NAME = "",
+    [string]$PKG_LATEST_URL = ""
 )
 
-if ($INSTALLER -eq "")
+if ($PKG_LATEST_NAME -eq "")
 {
-    $INSTALLER = "${INTEGRATION}-${ARCH}.msi"
+    $PKG_LATEST_NAME = "${INTEGRATION}-${ARCH}.msi"
 }
-if ($LATEST_MSI_URL -eq "")
+if ($PKG_LATEST_URL -eq "")
 {
-    $LATEST_MSI_URL = "https://download.newrelic.com/infrastructure_agent/windows/integrations/${INTEGRATION}/${INSTALLER}"
+    $PKG_LATEST_URL = "https://download.newrelic.com/infrastructure_agent/windows/integrations/${INTEGRATION}/${PKG_LATEST_NAME}"
 }
 
 if ($UPGRADE -eq "true")
 {
-    write-host "ℹ️ Downloading latest released version of msi from ${LATEST_MSI_URL}"
+    write-host "ℹ️ Downloading latest released version of msi from ${PKG_LATEST_URL}"
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
     try
     {
-        Invoke-WebRequest "${LATEST_MSI_URL}" -OutFile "${INSTALLER}"
+        Invoke-WebRequest "${PKG_LATEST_URL}" -OutFile "${PKG_LATEST_NAME}"
     }
     catch
     {
-        write-host "⚠️ Couldn't fetch latest version from ${LATEST_MSI_URL}, skipping test"
+        write-host "⚠️ Couldn't fetch latest version from ${PKG_LATEST_URL}, skipping test"
         exit 0
     }
 
-    write-host "::group::ℹ️ Installing latest released version of msi from ${LATEST_MSI_URL}"
-    if ($INSTALLER -notlike "*.msi")
+    write-host "::group::ℹ️ Installing latest released version of msi from ${PKG_LATEST_URL}"
+    if ($PKG_LATEST_NAME -notlike "*.msi")
     {
-        $p = Start-Process "$INSTALLER" -Wait -PassThru -ArgumentList "/s /l installer_log"
+        $p = Start-Process "$PKG_LATEST_NAME" -Wait -PassThru -ArgumentList "/s /l installer_log"
     }
     else
     {
-        $p = Start-Process msiexec.exe -Wait -PassThru -ArgumentList "/qn /L*v installer_log /i $INSTALLER"
+        $p = Start-Process msiexec.exe -Wait -PassThru -ArgumentList "/qn /L*v installer_log /i $PKG_LATEST_NAME"
     }
     Get-Content -Path .\installer_log
     write-host "::endgroup::"
@@ -48,27 +48,27 @@ if ($UPGRADE -eq "true")
         echo "❌ Failed installing latest version of the msi"
         exit 1
     }
-    echo "✅ Installation for ${INSTALLER} succeeded"
+    echo "✅ Installation for ${PKG_LATEST_NAME} succeeded"
 }
 
 $version = $TAG -replace "v", ""
-if ($MSI_PATH -eq "")
+if ($PKG_DIR -eq "")
 {
-    $MSI_PATH = "src\github.com\newrelic\${INTEGRATION}\build\package\windows\nri-${ARCH}-installer\bin\Release"
+    $PKG_DIR = "src\github.com\newrelic\${INTEGRATION}\build\package\windows\nri-${ARCH}-installer\bin\Release"
 }
-if ($MSI_FILE_NAME -eq "")
+if ($PKG_NAME -eq "")
 {
-    $MSI_FILE_NAME = "${INTEGRATION}-${ARCH}.${version}.msi"
+    $PKG_NAME = "${INTEGRATION}-${ARCH}.${version}.msi"
 }
-$installer = "${MSI_PATH}\${MSI_FILE_NAME}"
-write-host "::group::ℹ️ Installing generated msi: ${installer}"
-if ($installer -notlike "*.msi")
+$PKG_LATEST_NAME = "${PKG_DIR}\${PKG_NAME}"
+write-host "::group::ℹ️ Installing generated msi: ${PKG_LATEST_NAME}"
+if ($PKG_LATEST_NAME -notlike "*.msi")
 {
-    $p = Start-Process "$installer" -Wait -PassThru -ArgumentList "/s /l installer_log"
+    $p = Start-Process "$PKG_LATEST_NAME" -Wait -PassThru -ArgumentList "/s /l installer_log"
 }
 else
 {
-    $p = Start-Process msiexec.exe -Wait -PassThru -ArgumentList "/qn /L*v installer_log /i ${installer}"
+    $p = Start-Process msiexec.exe -Wait -PassThru -ArgumentList "/qn /L*v installer_log /i ${PKG_LATEST_NAME}"
 }
 Get-Content -Path .\installer_log
 write-host "::endgroup::"
@@ -78,7 +78,7 @@ if ($p.ExitCode -ne 0)
     echo "❌ Failed installing the msi"
     exit 1
 }
-echo "✅ Installation for ${installer} succeeded"
+echo "✅ Installation for ${PKG_LATEST_NAME} succeeded"
 
 $nr_base_dir = "${env:ProgramFiles}\New Relic\newrelic-infra"
 if ($ARCH -eq "386")

@@ -38,5 +38,5 @@ runs:
   using: "composite"
   steps: 
     - run: |
-        ${{ github.action_path }}\test_msi.ps1 ${{ inputs.integration }} ${{ inputs.arch }} ${{ inputs.tag }} ${{ inputs.upgrade }} ${{ inputs.pkgDir }} ${{ inputs.pkgName }} ${{ inputs.pkgName }} ${{ inputs.pkgName }}
+        ${{ github.action_path }}\test_msi.ps1 ${{ inputs.integration }} ${{ inputs.arch }} ${{ inputs.tag }} ${{ inputs.upgrade }} ${{ inputs.pkgDir }} ${{ inputs.pkgName }} ${{ inputs.pkgLatestName }} ${{ inputs.pkgLatestURL }}
       shell: pwsh
