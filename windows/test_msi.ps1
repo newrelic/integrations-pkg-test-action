@@ -88,7 +88,7 @@ if ($ARCH -eq "386")
 $bin_installed = "${nr_base_dir}\newrelic-integrations\bin\${INTEGRATION}.exe"
 
 write-host "::group::ℹ️ Check binary version: ${bin_installed}"
-$out = & "${bin_installed} -show_version" 2>&1
+$out = & "$bin_installed" -show_version 2>&1
 write-host "$out"
 write-host "::endgroup::"
 if ($out -notlike "*${version}*")
