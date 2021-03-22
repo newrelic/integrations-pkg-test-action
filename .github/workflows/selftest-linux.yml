@@ -29,6 +29,22 @@ jobs:
           pkgDir: testdata/dist
           distros: ${{ matrix.distro }}
 
+  linux-local-update:
+    runs-on: ubuntu-latest
+    name: Local linux self-test with upgrade apt
+    strategy:
+      matrix:
+        distro: [ ubuntu ]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Test local package on ${{ matrix.distro }}
+        uses: ./linux
+        with:
+          tag: '9.9.9'
+          integration: 'nri-mssql'
+          pkgDir: testdata/dist
+          distros: ${{ matrix.distro }}
+
   linux-remote:
     runs-on: ubuntu-latest
     name: Remote linux self-test

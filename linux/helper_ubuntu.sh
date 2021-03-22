@@ -24,7 +24,7 @@ install_agent() {
 
 # Install package from local file
 install_local() {
-    apt install -y "./dist/${INTEGRATION}_${TAG}-1_amd64.deb"
+    apt install -y -o Dpkg::Options::="--force-confnew" "./dist/${INTEGRATION}_${TAG}-1_amd64.deb"
 }
 
 # Install package from repository
