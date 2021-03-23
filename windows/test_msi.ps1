@@ -25,7 +25,7 @@ if ($PKG_UPSTREAM_NAME -eq "")
 
 if ($PKG_UPSTREAM_URL_BASE -eq "")
 {
-    $PKG_UPSTREAM_URL_BASE = "https://download.newrelic.com/infrastructure_agent/windows/integrations/${INTEGRATION}/"
+    $PKG_UPSTREAM_URL_BASE = "http://nr-downloads-main.s3-website-us-east-1.amazonaws.com/infrastructure_agent/windows/integrations/${INTEGRATION}/"
 }
 
 $PKG_UPSTREAM_URL = "${PKG_UPSTREAM_URL_BASE}${PKG_UPSTREAM_NAME}"
