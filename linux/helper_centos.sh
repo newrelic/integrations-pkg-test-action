@@ -6,7 +6,7 @@ add_repo() {
     if [ "$STAGING_REPO" = "true" ]; then
         repo="http://nr-downloads-ohai-staging.s3-website-us-east-1.amazonaws.com/infrastructure_agent/linux/yum/el/8/x86_64/newrelic-infra.repo"
     else
-        repo="https://download.newrelic.com/infrastructure_agent/linux/yum/el/8/x86_64/newrelic-infra.repo"
+        repo="http://nr-downloads-main.s3-website-us-east-1.amazonaws.com/infrastructure_agent/linux/yum/el/8/x86_64/newrelic-infra.repo"
     fi
 
     wget -nv -O /etc/yum.repos.d/newrelic-infra.repo "$repo"
