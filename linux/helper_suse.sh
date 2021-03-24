@@ -9,8 +9,8 @@ add_repo() {
     zypper -n install wget gnupg
     wget -nv -O /etc/zypp/repos.d/newrelic-infra.repo $repo
     # prod .repo file points to the cache url, we replace it to point to the bucket url
-    rs='s/https:\/\/download\.newrelic\.com/http:\/\/nr-downloads-main.s3-website-us-east-1.amazonaws.com/'
-    sed -i $rs /etc/zypp/repos.d/newrelic-infra.repo
+    rs='s|https://download.newrelic.com|http://nr-downloads-main.s3-website-us-east-1.amazonaws.com|'
+    sed -i "$rs" /etc/zypp/repos.d/newrelic-infra.repo
 
     wget -nv -O- http://nr-downloads-main.s3-website-us-east-1.amazonaws.com/infrastructure_agent/gpg/newrelic-infra.gpg |  gpg --import
     zypper --gpg-auto-import-keys ref

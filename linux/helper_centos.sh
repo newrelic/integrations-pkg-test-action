@@ -11,8 +11,8 @@ add_repo() {
 
     wget -nv -O /etc/yum.repos.d/newrelic-infra.repo "$repo"
     # prod .repo file points to the cache url, we replace it to point to the bucket url
-    rs='s/https:\/\/download\.newrelic\.com/http:\/\/nr-downloads-main.s3-website-us-east-1.amazonaws.com/'
-    sed -i $rs /etc/yum.repos.d/newrelic-infra.repo
+    rs='s|https://download.newrelic.com|http://nr-downloads-main.s3-website-us-east-1.amazonaws.com|'
+    sed -i "$rs" /etc/yum.repos.d/newrelic-infra.repo
 
     yum -q makecache -y --disablerepo='*' --enablerepo='newrelic-infra'
     yum update -y
