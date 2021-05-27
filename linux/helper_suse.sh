@@ -6,7 +6,7 @@ add_repo() {
     if [ "$STAGING_REPO" = "true" ]; then
         env="-staging"
     fi
-    cp newrelic-infra-suse"$env".repo /etc/zypp/repos.d/newrelic-infra.repo
+    cp "newrelic-infra-suse${env}.repo" /etc/zypp/repos.d/newrelic-infra.repo
 
     wget -nv -O- http://nr-downloads-main.s3-website-us-east-1.amazonaws.com/infrastructure_agent/gpg/newrelic-infra.gpg |  gpg --import
     zypper --gpg-auto-import-keys ref

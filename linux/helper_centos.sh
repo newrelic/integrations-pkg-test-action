@@ -4,7 +4,7 @@ add_repo() {
     if [ "$STAGING_REPO" = "true" ]; then
         env="-staging"
     fi
-    cp newrelic-infra-centos"$env".repo /etc/yum.repos.d/newrelic-infra.repo
+    cp "newrelic-infra-centos${env}.repo" /etc/yum.repos.d/newrelic-infra.repo
     yum -q makecache -y --disablerepo='*' --enablerepo='newrelic-infra'
     yum update -y
 }
