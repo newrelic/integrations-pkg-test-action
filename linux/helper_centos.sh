@@ -1,6 +1,9 @@
 # Adds the NR repo
 add_repo() {
-    [ "$STAGING_REPO" = "true" ] && env="-staging" || env="" ;
+    env=""
+    if [ "$STAGING_REPO" = "true" ]; then
+        env="-staging"
+    fi
     cp newrelic-infra-centos"$env".repo /etc/yum.repos.d/newrelic-infra.repo
     yum -q makecache -y --disablerepo='*' --enablerepo='newrelic-infra'
     yum update -y
