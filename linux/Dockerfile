@@ -8,8 +8,7 @@ ENV DISTRO=$DISTRO
 
 # Copy helper scripts
 COPY helper*.sh ./
-COPY staging ./staging
-COPY production ./production
+COPY newrelic-infra*.repo ./
 
 ARG STAGING_REPO=false
 ENV STAGING_REPO=$STAGING_REPO

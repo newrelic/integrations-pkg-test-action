@@ -1,7 +1,10 @@
 # Adds the NR repo
 add_repo() {
-    [ "$STAGING_REPO" = "true" ] && repo="staging" || repo="production" ;
-    cp "$repo"/newrelic-infra-centos.repo /etc/yum.repos.d/newrelic-infra.repo
+    cp newrelic-infra-centos.repo /etc/yum.repos.d/newrelic-infra.repo
+    if [ "$STAGING_REPO" = "true" ]; then
+      rs='s|nr-downloads-main|nr-downloads-ohai-staging|'
+      sed -i "$rs" /etc/yum.repos.d/newrelic-infra.repo
+    fi
 
     yum -q makecache -y --disablerepo='*' --enablerepo='newrelic-infra'
     yum update -y
