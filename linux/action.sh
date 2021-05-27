@@ -89,7 +89,7 @@ function build_and_test() {
     echo "ℹ️ Copying helper scripts to $dockerdir"
     mkdir "${dockerdir}/dist"
     cp "$GITHUB_ACTION_PATH"/helper*.sh "$dockerdir" # Copy helpers
-    cp "$GITHUB_ACTION_PATH"/newrelic-infra*.repo "$dockerdir" # Copy repos
+    cp -r "$GITHUB_ACTION_PATH"/rpm-repos "$dockerdir" # Copy .repo files for rpm-based distros
     # If we want to install local packages, copy them as well
     if [[ "$install_local" == "true" ]]; then
         echo "ℹ️ Copying packages from $PKGDIR to $dockerdir"
