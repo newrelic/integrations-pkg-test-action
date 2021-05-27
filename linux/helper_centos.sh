@@ -1,19 +1,10 @@
 # Adds the NR repo
 add_repo() {
-    yum update -y
-    yum install -y wget
-
+    env=""
     if [ "$STAGING_REPO" = "true" ]; then
-        repo="http://nr-downloads-ohai-staging.s3-website-us-east-1.amazonaws.com/infrastructure_agent/linux/yum/el/8/x86_64/newrelic-infra.repo"
-    else
-        repo="http://nr-downloads-main.s3-website-us-east-1.amazonaws.com/infrastructure_agent/linux/yum/el/8/x86_64/newrelic-infra.repo"
+        env="-staging"
     fi
-
-    wget -nv -O /etc/yum.repos.d/newrelic-infra.repo "$repo"
-    # prod .repo file points to the cache url, we replace it to point to the bucket url
-    rs='s|https://download.newrelic.com|http://nr-downloads-main.s3-website-us-east-1.amazonaws.com|'
-    sed -i "$rs" /etc/yum.repos.d/newrelic-infra.repo
-
+    cp "newrelic-infra-centos${env}.repo" /etc/yum.repos.d/newrelic-infra.repo
     yum -q makecache -y --disablerepo='*' --enablerepo='newrelic-infra'
     yum update -y
 }

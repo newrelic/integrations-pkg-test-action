@@ -1,0 +1,6 @@
+[newrelic-infra]
+name=New Relic Infrastructure
+baseurl=http://nr-downloads-ohai-staging.s3-website-us-east-1.amazonaws.com/infrastructure_agent/linux/zypp/sles/12.4/x86_64
+gpgkey=http://nr-downloads-ohai-staging.s3-website-us-east-1.amazonaws.com/infrastructure_agent/gpg/newrelic-infra.gpg
+gpgcheck=1
+repo_gpgcheck=1

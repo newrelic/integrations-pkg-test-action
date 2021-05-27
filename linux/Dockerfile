@@ -7,7 +7,7 @@ ARG DISTRO
 ENV DISTRO=$DISTRO
 
 # Copy helper scripts
-COPY helper*.sh ./
+COPY helper*.sh rpm-repos/*.repo ./
 
 ARG STAGING_REPO=false
 ENV STAGING_REPO=$STAGING_REPO
