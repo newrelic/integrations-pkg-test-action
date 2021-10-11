@@ -24,16 +24,23 @@ POST_INSTALL="$POST_INSTALL
 $POST_INSTALL_EXTRA"
 
 # Returns the docker image for the specified distro ($1)
-function image_for() {
+function qualify_distro() {
     case $1 in
+    *:*)
+        # Return it as-is if it already looks like a docker tag
+        printf '%s' "$1"
+        ;;
     "ubuntu")
-        printf "ubuntu:focal"
+        printf "ubuntu:hirsute"
         ;;
     "suse")
-        printf "opensuse/leap"
+        printf "registry.suse.com/suse/sle15:latest"
         ;;
     "centos")
         printf "centos:centos8"
+        ;;
+    "debian")
+        printf "debian:bullseye"
         ;;
     esac
 }
@@ -64,20 +71,25 @@ function build_and_test() {
         return 1
     fi
 
+    # Convert distro name to docker tag
+    distro_image=$(qualify_distro "$distro")
+    if [[ -z "$distro_image" ]]; then
+        echo "❌ Internal error: cannot figure base docker image for '$distro'"
+        return 1
+    fi
+    # And use that from now on, so helper scripts can rely on a complete image name as the distro
+
     # Compute suffix for the docker tag
     suffix=""
     if [[ "$install_repo" == "true" ]]; then suffix=${suffix}-repo; fi
     if [[ "$STAGING_REPO" == "true" ]]; then suffix=${suffix}-staging; fi
     if [[ "$install_local" == "true" ]]; then suffix=${suffix}-local; fi
 
-    dockertag="${INTEGRATION}:${distro}-${TAG}${suffix}"
-
-    # Get base image from distro
-    base_image=$(image_for "$distro")
-    if [[ -z "$base_image" ]]; then
-        echo "❌ Internal error: cannot figure base docker image for '$distro'"
-        return 1
-    fi
+    # Build a tag for our testing image, including the distro name after removing the repo and replacing : with -
+    parent_tag=$distro_image
+    parent_tag=${parent_tag##*/}
+    parent_tag=${parent_tag/:/-}
+    dockertag="${INTEGRATION}:${parent_tag}-${TAG}${suffix}"
 
     # Docker needs to copy both user-supplied items (packages) and action-supplied items (helper*.sh scripts)
     # Since build context is tied to the WD for `docker run`, we need to create a temp dir and copy both things there
@@ -104,8 +116,7 @@ function build_and_test() {
     echo "ℹ️ Running installation test for $dockertag"
     echo "::group::docker build $dockertag"
     if ! docker build -t "$dockertag" -f "${GITHUB_ACTION_PATH}/Dockerfile" \
-        --build-arg DISTRO="$distro" \
-        --build-arg BASE_IMAGE="$base_image" \
+        --build-arg BASE_IMAGE="$distro_image" \
         --build-arg TAG="$TAG" \
         --build-arg INTEGRATION="$INTEGRATION" \
         --build-arg INSTALL_REPO="$install_repo" \
