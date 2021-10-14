@@ -46,8 +46,7 @@ The following inputs can be specified to override the default behavior
   - default: empty
 * `postInstall`: Override the post-install test script. This is run line-by-line in different containers. A non-zero exit code causes the install check to fail.
   - default: See `entrypoint.sh`
-* `distros`: Space-separated list of distros to run the test on. Supported values are "ubuntu", "suse" and "centos"
-  - default: `centos suse ubuntu`
+* `distros`: Space-separated list of distros to run the test on. See below for details.
 * `packageLocation`: Whether to test local packages (`local`) or packages from the upstream repo (`repo`). Useful for testing the staging repo.
   - *Note: Specifying both `packageLocation: repo` and `upgrade: true` is not possible and such combination will be silently ignored.*
   - default: `local`
@@ -55,6 +54,18 @@ The following inputs can be specified to override the default behavior
   - default: `false`
 * `pkgDir`: Path where archives (.deb and .rpm) reside
   - default: `./dist`
+
+##### Supported `distros`
+
+Distros to test on are supplied as docker tags, provided that a mapping between the tag and a helper script is available for it. Mapping between tags and helpers can be found here: https://github.com/newrelic/integrations-pkg-test-action/blob/master/linux/helper.sh#L8
+
+If a mapping exists for the docker image, the associated helper script will be responsible of adding to the image the corresponding repository for that particular tag.
+
+Despite not being docker tags, `action.sh` will also [accept](https://github.com/newrelic/integrations-pkg-test-action/blob/master/linux/action.sh#L27) the following values:
+* `ubuntu`
+* `suse`
+* `centos`
+* `debian`
 
 #### Running locally
 
