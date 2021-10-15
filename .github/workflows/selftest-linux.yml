@@ -41,7 +41,7 @@ jobs:
         uses: ./linux
         with:
           tag: '.' # Match anything, just for testing
-          integration: 'nri-haproxy'
+          integration: 'nri-postgresql'
           upgrade: false
           packageLocation: 'repo'
           pkgDir: testdata/dist # PKGDir must exist or docker will fail to `COPY` things
@@ -60,7 +60,7 @@ jobs:
         uses: ./linux
         with:
           tag: '.' # Match anything, just for testing
-          integration: 'nri-haproxy'
+          integration: 'nri-postgresql'
           upgrade: false
           packageLocation: 'repo'
           pkgDir: testdata/dist # PKGDir must exist or docker will fail to `COPY` things

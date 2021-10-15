@@ -3,8 +3,8 @@ FROM $BASE_IMAGE as base
 
 WORKDIR /integration
 
-ARG DISTRO
-ENV DISTRO=$DISTRO
+ARG BASE_IMAGE
+ENV BASE_IMAGE=$BASE_IMAGE
 
 # Copy helper scripts
 COPY helper*.sh rpm-repos/*.repo ./

@@ -1,17 +1,40 @@
 #!/usr/bin/env sh
 
-# helper.sh runs inside the docker image and takes care of adding repos, packages, and performing checks
+# helper.sh runs inside the docker container and takes care of adding repos, packages, and performing checks
 
 set -e
 
-if [ -z "$DISTRO" ]; then
-    echo "DISTRO env var not defined, exiting"
+# Return the helper script to be used for the specified docker docker_image
+helper_name() {
+    case $1 in
+    ubuntu:* | debian:*)
+        printf "ubuntu"
+        ;;
+    centos:*)
+        printf "centos"
+        ;;
+    registry.suse.com/suse/sle*)
+        printf "suse"
+        ;;
+    esac
+}
+
+if [ -z "$BASE_IMAGE" ]; then
+    echo "BASE_IMAGE env var not defined, exiting"
+    exit 1
+fi
+
+# Get helper suffix from the docker tag.
+# E.g. from `ubuntu:focal`, get `ubuntu`.
+helper=$(helper_name "$BASE_IMAGE")
+if [ -z "$helper" ]; then
+    echo "❌ Could not find a helper script for distro $BASE_IMAGE"
     exit 1
 fi
 
 # Distro-specific scripts define add_repo, install_agent, install_local and install_repo functions
 # shellcheck source=helper_ubuntu.sh
-. "./helper_${DISTRO}.sh"
+. "./helper_${helper}.sh"
 
 # Prepare step: Add NR repo and dependencies
 if [ "$1" = "prepare" ]; then
