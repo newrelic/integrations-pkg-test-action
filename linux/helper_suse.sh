@@ -29,6 +29,9 @@ add_repo() {
     elif [ "$major_version" -eq 12 ]; then
         sed -e "s/__VERSION__/${VERSION_ID}/g" "newrelic-infra-suse-12${env}.repo" > /etc/zypp/repos.d/newrelic-infra.repo
         zypper -n ref -r newrelic-infra
+    else
+        echo "Only Suse versions 12 and 15 are supported by this action"
+        return 1
     fi
 }
 
