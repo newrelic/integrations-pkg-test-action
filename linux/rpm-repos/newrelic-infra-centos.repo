@@ -1,6 +1,6 @@
 [newrelic-infra]
 name=New Relic Infrastructure
-baseurl=http://download.newrelic.com/infrastructure_agent/linux/yum/el/__VERSION__/x86_64
-gpgkey=http://download.newrelic.com/infrastructure_agent/gpg/newrelic-infra.gpg
+baseurl=http://nr-downloads-main.s3-website-us-east-1.amazonaws.com/infrastructure_agent/linux/yum/el/__VERSION__/x86_64
+gpgkey=http://nr-downloads-main.s3-website-us-east-1.amazonaws.com/infrastructure_agent/gpg/newrelic-infra.gpg
 gpgcheck=1
 repo_gpgcheck=1
