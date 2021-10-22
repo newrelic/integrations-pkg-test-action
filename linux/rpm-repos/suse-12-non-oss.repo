@@ -1,0 +1,7 @@
+[non-oss]
+name=Non OSS repo
+enabled=1
+autorefresh=1
+baseurl=http://ftp5.gwdg.de/pub/opensuse/discontinued/distribution/12.3/repo/non-oss/
+type=yast2
+gpgcheck=1
