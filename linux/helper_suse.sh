@@ -18,7 +18,7 @@ add_repo() {
     #   CPE_NAME="cpe:/o:suse:sles:15:sp3"
     #   DOCUMENTATION_URL="https://documentation.suse.com/"
     . /etc/os-release
-    major_version="$(echo -n "$VERSION_ID" | cut -d. -f1)"
+    major_version=${VERSION_ID%%.*}
     printf "Detected version '%s' from os-release" "$VERSION_ID"
 
     if [ "$major_version" -lt 15 ]; then
