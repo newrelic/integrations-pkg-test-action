@@ -2,7 +2,7 @@
 name=New Relic Infrastructure
 enabled=1
 autorefresh=0
-baseurl=https://nr-downloads-main.s3-website-us-east-1.amazonaws.com/infrastructure_agent/linux/zypp/sles/__VERSION__/x86_64/
+baseurl=http://nr-downloads-main.s3-website-us-east-1.amazonaws.com/infrastructure_agent/linux/zypp/sles/__VERSION__/x86_64/
 type=rpm-md
 gpgcheck=0
 repo_gpgcheck=0
