@@ -18,18 +18,20 @@ add_repo() {
     #   CPE_NAME="cpe:/o:suse:sles:15:sp3"
     #   DOCUMENTATION_URL="https://documentation.suse.com/"
     . /etc/os-release
-    major_version=${VERSION_ID%%.*}
     printf "Detected version '%s' from os-release" "$VERSION_ID"
 
-    if [ "$major_version" -lt 15 ]; then
-        sed -e "s/__VERSION__/${VERSION_ID}/g" "newrelic-infra-suse-12${env}.repo" > /etc/zypp/repos.d/newrelic-infra.repo
-        zypper -n ref -r newrelic-infra
-    else
-        zypper -n install wget
-        wget -qO- "http://${domain}/infrastructure_agent/gpg/newrelic-infra.gpg" | gpg --import
-        zypper -n addrepo "http://${domain}/infrastructure_agent/linux/zypp/sles/${VERSION_ID}/x86_64/newrelic-infra.repo"
+    if [ "${VERSION_ID%%.*}" -eq 12 ]; then
+        cp suse-12-oss.repo /etc/zypp/repos.d/suse-12-oss.repo
+        cp suse-12-non-oss.repo /etc/zypp/repos.d/suse-12-non-oss.repo
         zypper --gpg-auto-import-keys ref
     fi
+
+    zypper -n install wget
+    wget -q "http://${domain}/infrastructure_agent/gpg/newrelic-infra.gpg" -O newrelic-infra.gpg
+    rpm --import newrelic-infra.gpg && rm newrelic-infra.gpg
+
+    zypper -n addrepo "http://${domain}/infrastructure_agent/linux/zypp/sles/${VERSION_ID}/x86_64/newrelic-infra.repo"
+    zypper --gpg-auto-import-keys ref
 }
 
 install_agent() {
