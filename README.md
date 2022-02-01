@@ -3,7 +3,7 @@
 # integrations-pkg-test-action
 
 An action to test for correct installation and upgrades of New Relic integration packages.
-It tests clean installation and upgrade for integration packages in CentOS, Suse and Ubuntu, as well as in Windows.
+It tests clean installation and upgrade for integration packages in Rocky Linux, Suse and Ubuntu, as well as in Windows.
 
 ## Usage
 
@@ -64,7 +64,7 @@ If a mapping exists for the docker image, the associated helper script will be r
 Despite not being docker tags, `action.sh` will also [accept](https://github.com/newrelic/integrations-pkg-test-action/blob/master/linux/action.sh#L27) the following values:
 * `ubuntu`
 * `suse`
-* `centos`
+* `rockylinux`
 * `debian`
 
 #### Running locally

@@ -10,8 +10,8 @@ helper_name() {
     ubuntu:* | debian:*)
         printf "ubuntu"
         ;;
-    centos:*)
-        printf "centos"
+    rockylinux:*)
+        printf "rockylinux"
         ;;
     registry.suse.com/suse/sle*)
         printf "suse"
