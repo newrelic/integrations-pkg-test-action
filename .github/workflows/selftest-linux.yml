@@ -17,7 +17,7 @@ jobs:
     name: Local linux self-test
     strategy:
       matrix:
-        distro: [ ubuntu, suse, centos ]
+        distro: [ ubuntu, suse, rockylinux ]
     steps:
       - uses: actions/checkout@v2
       - name: Test local package on ${{ matrix.distro }}
@@ -34,7 +34,7 @@ jobs:
     name: Remote linux self-test on staging Repo
     strategy:
       matrix:
-        distro: [ ubuntu, suse, centos ]
+        distro: [ ubuntu, suse, rockylinux ]
     steps:
       - uses: actions/checkout@v2
       - name: Test staging package on ${{ matrix.distro }}
@@ -53,7 +53,7 @@ jobs:
     name: Remote linux self-test on prod Repo
     strategy:
       matrix:
-        distro: [ ubuntu, suse, centos ]
+        distro: [ ubuntu, suse, rockylinux ]
     steps:
       - uses: actions/checkout@v2
       - name: Test staging package on ${{ matrix.distro }}

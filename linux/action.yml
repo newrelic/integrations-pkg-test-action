@@ -1,5 +1,5 @@
 name: 'Test packages installation'
-description: 'This action test packages installation in Suse, CentOS and Ubuntu'
+description: 'This action test packages installation in Suse, Rocky Linux and Ubuntu'
 inputs:
   tag:
     description: 'Tag of the integration to test'
@@ -30,7 +30,7 @@ inputs:
     required: false
     default: ""
   distros:
-    description: 'Space-separated list of distros to run the test on. Supported values are "ubuntu", "suse" and "centos"'
+    description: 'Space-separated list of distros to run the test on. Supported values are "ubuntu", "suse" and "rockylinux"'
     required: false
     default: ""
   pkgDir:

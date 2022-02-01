@@ -5,7 +5,7 @@ set -o pipefail
 
 # Populate defaults
 [[ -n $GITHUB_ACTION_PATH ]] || GITHUB_ACTION_PATH=$(pwd)
-[[ -n $DISTROS ]] || DISTROS="ubuntu:hirsute ubuntu:focal ubuntu:bionic debian:bullseye debian:buster centos:centos8 centos:centos7 suse registry.suse.com/suse/sles12sp5:latest"
+[[ -n $DISTROS ]] || DISTROS="ubuntu:hirsute ubuntu:focal ubuntu:bionic debian:bullseye debian:buster rockylinux:8 suse registry.suse.com/suse/sles12sp5:latest"
 [[ -n $PKGDIR ]] || PKGDIR="./dist"
 [[ -n $PACKAGE_LOCATION ]] || PACKAGE_LOCATION="local"
 
@@ -36,8 +36,8 @@ function qualify_distro() {
     "suse")
         printf "registry.suse.com/suse/sle15:latest"
         ;;
-    "centos")
-        printf "centos:centos8"
+    "rockylinux")
+        printf "rockylinux:8"
         ;;
     "debian")
         printf "debian:bullseye"
