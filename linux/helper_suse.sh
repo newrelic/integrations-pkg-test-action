@@ -1,9 +1,7 @@
 # Adds the NR repo
 add_repo() {
-    env=""
     domain="nr-downloads-main.s3-website-us-east-1.amazonaws.com"
     if [ "$STAGING_REPO" = "true" ]; then
-        env="-staging"
         domain="nr-downloads-ohai-staging.s3-website-us-east-1.amazonaws.com"
     fi
 
@@ -40,7 +38,19 @@ install_agent() {
 
 # Install package from local file
 install_local() {
-    zypper -n install "./dist/${INTEGRATION}-${TAG}-1.x86_64.rpm"
+    . /etc/os-release
+    if [ "${VERSION_ID%%.*}" -eq 12 ]; then
+        # Workaround Zypper failing to check signature of rpm for certain packages.
+        # TODO: coulnd't find the exact reason why but nri-nginx packages starting from 3.2.1 started
+        # to fail signature check with zypper. 
+        rpm -qpi "./dist/${INTEGRATION}-${TAG}-1.x86_64.rpm" |grep "^Signature.*bb29ee038ecce87c$"
+        rpm --checksig "./dist/${INTEGRATION}-${TAG}-1.x86_64.rpm"
+
+        zypper -n --no-gpg-checks install "./dist/${INTEGRATION}-${TAG}-1.x86_64.rpm" 
+        return
+    fi
+
+    zypper -n install "./dist/${INTEGRATION}-${TAG}-1.x86_64.rpm" 
 }
 
 # Install package from repository

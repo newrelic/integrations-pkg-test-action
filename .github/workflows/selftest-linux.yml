@@ -29,6 +29,20 @@ jobs:
           pkgDir: testdata/dist
           distros: ${{ matrix.distro }}
 
+  linux-local-suse12:
+    runs-on: ubuntu-latest
+    name: Local linux self-test with suse 12.5
+    steps:
+      - uses: actions/checkout@v2
+      - name: Test local package on ${{ matrix.distro }}
+        uses: ./linux
+        with:
+          tag: '3.2.1'
+          integration: 'nri-nginx'
+          upgrade: false # Needed for self-test not to fail due to downgrading package
+          pkgDir: testdata/dist
+          distros: registry.suse.com/suse/sles12sp5:latest
+
   linux-remote-staging:
     runs-on: ubuntu-latest
     name: Remote linux self-test on staging Repo
