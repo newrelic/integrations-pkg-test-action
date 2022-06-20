@@ -31,7 +31,7 @@ function qualify_distro() {
         printf '%s' "$1"
         ;;
     "ubuntu")
-        printf "ubuntu:hirsute"
+        printf "ubuntu:jammy"
         ;;
     "suse")
         printf "registry.suse.com/suse/sle15:latest"
