@@ -28,7 +28,11 @@ add_repo() {
     wget -q "http://${domain}/infrastructure_agent/gpg/newrelic-infra.gpg" -O newrelic-infra.gpg
     rpm --import newrelic-infra.gpg && rm newrelic-infra.gpg
 
-    zypper -n addrepo "http://${domain}/infrastructure_agent/linux/zypp/sles/${VERSION_ID}/x86_64/newrelic-infra.repo"
+    # Pointing to cacheless endpoint if we match the prod URL. Non prod URL will not match
+    wget -q "http://${domain}/infrastructure_agent/linux/zypp/sles/${VERSION_ID}/x86_64/newrelic-infra.repo" -O "repo.tmp"
+    sed -e "s/https:\/\/download.newrelic.com/http:\/\/${domain}/g" "repo.tmp" > /etc/zypp/repos.d/newrelic-infra.repo
+
+
     zypper --gpg-auto-import-keys ref
 }
 
