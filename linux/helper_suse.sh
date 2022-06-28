@@ -1,8 +1,10 @@
 # Adds the NR repo
 add_repo() {
     domain="nr-downloads-main.s3-website-us-east-1.amazonaws.com"
+    env=""
     if [ "$STAGING_REPO" = "true" ]; then
         domain="nr-downloads-ohai-staging.s3-website-us-east-1.amazonaws.com"
+        env="-staging"
     fi
 
     # os-release file should have this structure:
@@ -18,21 +20,18 @@ add_repo() {
     . /etc/os-release
     printf "Detected version '%s' from os-release" "$VERSION_ID"
 
+
     if [ "${VERSION_ID%%.*}" -eq 12 ]; then
         cp suse-12-oss.repo /etc/zypp/repos.d/suse-12-oss.repo
         cp suse-12-non-oss.repo /etc/zypp/repos.d/suse-12-non-oss.repo
         zypper --gpg-auto-import-keys ref
     fi
-
     zypper -n install wget
     wget -q "http://${domain}/infrastructure_agent/gpg/newrelic-infra.gpg" -O newrelic-infra.gpg
     rpm --import newrelic-infra.gpg && rm newrelic-infra.gpg
 
-    # Pointing to cacheless endpoint if we match the prod URL. Non prod URL will not match
-    wget -q "http://${domain}/infrastructure_agent/linux/zypp/sles/${VERSION_ID}/x86_64/newrelic-infra.repo" -O "repo.tmp"
-    sed -e "s/https:\/\/download.newrelic.com/http:\/\/${domain}/g" "repo.tmp" > /etc/zypp/repos.d/newrelic-infra.repo
-
-
+    cp "newrelic-infra-suse${env}.repo" tmp.repo
+    sed -e "s/__VERSION__/$VERSION_ID/g" tmp.repo > /etc/zypp/repos.d/newrelic-infra.repo
     zypper --gpg-auto-import-keys ref
 }
 
