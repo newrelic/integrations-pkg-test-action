@@ -5,7 +5,7 @@ set -o pipefail
 
 # Populate defaults
 [[ -n $GITHUB_ACTION_PATH ]] || GITHUB_ACTION_PATH=$(pwd)
-[[ -n $DISTROS ]] || DISTROS="ubuntu:jammy ubuntu:hirsute ubuntu:focal ubuntu:bionic debian:bullseye debian:buster rockylinux:8 suse registry.suse.com/suse/sles12sp5:latest"
+[[ -n $DISTROS ]] || DISTROS="ubuntu:jammy ubuntu:focal ubuntu:bionic debian:bullseye debian:buster debian:stretch rockylinux:8 registry.suse.com/suse/sles12sp5:latest suse"
 [[ -n $PKGDIR ]] || PKGDIR="./dist"
 [[ -n $PACKAGE_LOCATION ]] || PACKAGE_LOCATION="local"
 
