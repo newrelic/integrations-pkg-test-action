@@ -46,5 +46,16 @@ runs:
   using: "composite"
   steps: 
     - run: |
-        ${{ github.action_path }}\test_msi.ps1 ${{ inputs.integration }} ${{ inputs.arch }} ${{ inputs.tag }} ${{ inputs.repoVersion }} ${{ inputs.upgrade }} ${{ inputs.pkgType }} ${{ inputs.pkgDir }} ${{ inputs.pkgName }} ${{ inputs.pkgUpstreamBaseURL }} ${{ inputs.pkgLatestName }}
+        $Env:integration="${{ inputs.integration }}"
+        $Env:arch="${{ inputs.arch }}"
+        $Env:tag="${{ inputs.tag }}"
+        $Env:upgrade="${{ inputs.upgrade }}"
+        $Env:pkgType="${{ inputs.pkgType }}"
+        $Env:pkgDir="${{ inputs.pkgDir }}"
+        $Env:pkgName="${{ inputs.pkgName }}"
+        $Env:pkgUpstreamBaseURL="${{ inputs.pkgUpstreamBaseURL }}"
+        $Env:pkgLatestName="${{ inputs.pkgLatestName }}"
+        $Env:repoVersion="${{ inputs.repoVersion }}"
+        
+        ${{ github.action_path }}\test_msi.ps1
       shell: pwsh

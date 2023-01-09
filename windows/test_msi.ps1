@@ -1,16 +1,18 @@
-param (
-    [string]$INTEGRATION = "nri-test",
-    [string]$ARCH = "amd64",
-    [string]$TAG = "v0.0.0",
-    [string]$REPO_VERSION = "",
-    [string]$UPGRADE = "false", # upgrade: upgrade msi from last released version.
-    [ValidateSet("msi", "exe")]
-    [string]$PKG_TYPE = "msi",
-    [string]$PKG_DIR = "",
-    [string]$PKG_NAME = "",
-    [string]$PKG_UPSTREAM_URL_BASE = "",
-    [string]$PKG_UPSTREAM_NAME = ""
-)
+$INTEGRATION = if ($env:integration) {"$env:integration"} else {"nri-test"};
+$ARCH  = if ($env:arch) {"$env:arch"} else {"amd64"};
+$TAG = if ($env:tag) {"$env:tag"} else {"v0.0.0"};
+$UPGRADE = if ($env:upgrade) {"$env:upgrade"} else {"false"}; # upgrade: upgrade msi from last released version.
+$PKG_TYPE = if ($env:pkgType) {"$env:pkgType"} else {"msi"};
+$PKG_DIR = "$env:pkgDir"
+$PKG_NAME = "$env:pkgName"
+$PKG_UPSTREAM_URL_BASE = "$env:pkgUpstreamBaseURL"
+$PKG_UPSTREAM_NAME = "$env:pkgLatestName"
+$REPO_VERSION = "$env:repoVersion"
+
+if ($PKG_TYPE -NotMatch "msi" -And $PKG_TYPE -NotMatch "exe") {
+    echo "❌ PKG_TYPE can only be 'msi' or 'exe'"
+    exit 1
+}
 
 $version = ""
 if ($REPO_VERSION -ne "")
