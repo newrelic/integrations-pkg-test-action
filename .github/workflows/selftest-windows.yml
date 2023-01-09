@@ -20,6 +20,7 @@ jobs:
         timeout-minutes: 10
         with:
           tag: 'v2.2.0'
+          repoVersion: 'v2.2.0'
           integration: 'nri-haproxy'
           arch: ${{ matrix.goarch }}
           upgrade: false
@@ -34,6 +35,7 @@ jobs:
         timeout-minutes: 10
         with:
           tag: 'v9.9.9'
+          repoVersion: 'v9.9.9'
           integration: 'nri-cassandra'
           arch: amd64
           upgrade: false

@@ -22,6 +22,7 @@ FROM base
 COPY ./dist ./dist
 
 ARG INTEGRATION
+ARG REPO_VERSION
 ARG TAG
 ARG INSTALL_REPO=false
 ARG FAIL_REPO=false
@@ -35,6 +36,7 @@ ARG INSTALL_LOCAL=true
 # - Install the integration from a local file if INSTALL_LOCAL==true
 #   + Local file name is defined on each of the helper_*.sh variants
 RUN INTEGRATION=$INTEGRATION \
+    REPO_VERSION=$REPO_VERSION \
     TAG=$TAG \
     INSTALL_REPO=$INSTALL_REPO \
     FAIL_REPO=$FAIL_REPO \

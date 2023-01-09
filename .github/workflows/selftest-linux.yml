@@ -80,3 +80,51 @@ jobs:
           pkgDir: testdata/dist # PKGDir must exist or docker will fail to `COPY` things
           stagingRepo: false
           distros: ${{ matrix.distro }}
+
+  linux-remote-specific-version-staging:
+    runs-on: ubuntu-latest
+    name: Remote linux self-test on specific staging Repo
+    strategy:
+      matrix:
+        distro: [ "ubuntu:jammy", "debian:bullseye", "registry.suse.com/suse/sle15:15.3" ]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Test staging package on ${{ matrix.distro }}
+        uses: ./linux
+        with:
+          # This is an old version from the repo, it should be changed to an existing one in case
+          # it's removed and the pipleline fails.
+          # The reason to hardcode it instead of getting the list of Packages from S3, is that the url used
+          # could also disappear if we remove one of the specific distribution version used.
+          tag: '2.5.3'
+          repoVersion: '2.5.3'
+          integration: 'nri-f5'
+          upgrade: false
+          packageLocation: 'repo'
+          pkgDir: testdata/dist # PKGDir must exist or docker will fail to `COPY` things
+          stagingRepo: true
+          distros: ${{ matrix.distro }}
+
+  linux-remote-specific-version-prod:
+    runs-on: ubuntu-latest
+    name: Remote linux self-test on specific prod Repo
+    strategy:
+      matrix:
+        distro: [ "ubuntu:jammy", "debian:bullseye", "registry.suse.com/suse/sle15:15.3" ]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Test staging package on ${{ matrix.distro }}
+        uses: ./linux
+        with:
+          # This is an old version from the repo, it should be changed to an existing one in case
+          # it's removed and the pipleline fails.
+          # The reason to hardcode it instead of getting the list of Packages from S3, is that the url used
+          # could also disappear if we remove one of the specific distribution version used.
+          tag: '2.5.3'
+          repoVersion: '2.5.3'
+          integration: 'nri-f5'
+          upgrade: false
+          packageLocation: 'repo'
+          pkgDir: testdata/dist # PKGDir must exist or docker will fail to `COPY` things
+          stagingRepo: false
+          distros: ${{ matrix.distro }}

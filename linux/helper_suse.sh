@@ -58,5 +58,9 @@ install_local() {
 
 # Install package from repository
 install_repo() {
-    zypper -n install "$INTEGRATION"
+    version=""
+    if [ "$REPO_VERSION" != "" ]; then
+        version="=$REPO_VERSION"
+    fi
+    zypper -n install "${INTEGRATION}${version}"
 }

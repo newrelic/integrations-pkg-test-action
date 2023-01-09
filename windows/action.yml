@@ -5,6 +5,10 @@ inputs:
     description: 'Tag of the integration to test'
     required: true
     default: 'v0.0.0'
+  repoVersion:
+    description: 'Version of the integration to download from the repository'
+    required: false
+    default: ""
   integration:
     description: 'Name of the integration to test'
     required: true
@@ -42,5 +46,5 @@ runs:
   using: "composite"
   steps: 
     - run: |
-        ${{ github.action_path }}\test_msi.ps1 ${{ inputs.integration }} ${{ inputs.arch }} ${{ inputs.tag }} ${{ inputs.upgrade }} ${{ inputs.pkgType }} ${{ inputs.pkgDir }} ${{ inputs.pkgName }} ${{ inputs.pkgUpstreamBaseURL }} ${{ inputs.pkgLatestName }}
+        ${{ github.action_path }}\test_msi.ps1 ${{ inputs.integration }} ${{ inputs.arch }} ${{ inputs.tag }} ${{ inputs.repoVersion }} ${{ inputs.upgrade }} ${{ inputs.pkgType }} ${{ inputs.pkgDir }} ${{ inputs.pkgName }} ${{ inputs.pkgUpstreamBaseURL }} ${{ inputs.pkgLatestName }}
       shell: pwsh

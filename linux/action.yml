@@ -5,6 +5,10 @@ inputs:
     description: 'Tag of the integration to test'
     required: true
     default: '0.0.0'
+  repoVersion:
+    description: 'Version of the integration to download from the repository'
+    required: false
+    default: ""
   integration:
     description: 'Name of the integration to test'
     required: true
@@ -45,6 +49,7 @@ runs:
       shell: bash
       env:
         TAG: ${{ inputs.tag }}
+        REPO_VERSION: ${{ inputs.repoVersion }}
         INTEGRATION: ${{ inputs.integration }}
         PACKAGE_LOCATION: ${{ inputs.packageLocation }}
         STAGING_REPO: ${{ inputs.stagingRepo }}
