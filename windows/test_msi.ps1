@@ -2,6 +2,7 @@ param (
     [string]$INTEGRATION = "nri-test",
     [string]$ARCH = "amd64",
     [string]$TAG = "v0.0.0",
+    [string]$REPO_VERSION = "",
     [string]$UPGRADE = "false", # upgrade: upgrade msi from last released version.
     [ValidateSet("msi", "exe")]
     [string]$PKG_TYPE = "msi",
@@ -11,15 +12,20 @@ param (
     [string]$PKG_UPSTREAM_NAME = ""
 )
 
+$version = ""
+if ($REPO_VERSION -ne "")
+{
+    $version = ".$REPO_VERSION" -replace "v", ""
+}
 if ($PKG_UPSTREAM_NAME -eq "")
 {
     if ($PKG_TYPE -eq "msi")
     {
-        $PKG_UPSTREAM_NAME = "${INTEGRATION}-${ARCH}.msi"
+        $PKG_UPSTREAM_NAME = "${INTEGRATION}-${ARCH}${version}.msi"
     }
     elseif ($PKG_TYPE -eq "exe")
     {
-        $PKG_UPSTREAM_NAME = "${INTEGRATION}-${ARCH}-installer.exe"
+        $PKG_UPSTREAM_NAME = "${INTEGRATION}-${ARCH}${version}-installer.exe"
     }
 }
 

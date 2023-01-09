@@ -9,8 +9,9 @@ set -o pipefail
 [[ -n $PKGDIR ]] || PKGDIR="./dist"
 [[ -n $PACKAGE_LOCATION ]] || PACKAGE_LOCATION="local"
 
-# Strip leading v from TAG if present
+# Strip leading v from TAG and REPO_VERSION if present
 TAG=${TAG/v/}
+REPO_VERSION=${REPO_VERSION/v/}
 
 # Default post-install test suite
 if [[ -z $POST_INSTALL ]]; then
@@ -118,6 +119,7 @@ function build_and_test() {
     if ! docker build -t "$dockertag" -f "${GITHUB_ACTION_PATH}/Dockerfile" \
         --build-arg BASE_IMAGE="$distro_image" \
         --build-arg TAG="$TAG" \
+        --build-arg REPO_VERSION="$REPO_VERSION" \
         --build-arg INTEGRATION="$INTEGRATION" \
         --build-arg INSTALL_REPO="$install_repo" \
         --build-arg INSTALL_LOCAL="$install_local" \

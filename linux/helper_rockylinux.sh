@@ -26,5 +26,9 @@ install_local() {
 
 # Install package from repository
 install_repo() {
-    yum -y install "$INTEGRATION"
+    version=""
+    if [ "$REPO_VERSION" != "" ]; then
+        version="-$REPO_VERSION"
+    fi
+    yum -y install "${INTEGRATION}${version}"
 }

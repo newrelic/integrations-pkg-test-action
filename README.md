@@ -22,8 +22,9 @@ Test local packages produced in the `dist` folder:
 
 Test packages uploaded to the staging repos:
 
-> Note: When `packageLocation == repo`, `tag` does *not* specify which version is downloaded from the repo (which is always the latest available).
+> Note: When `packageLocation == repo`, `tag` does *not* specify which version is downloaded from the repo (which by default is always the latest available).
 > However, `tag` will be used to compare against the `-show_version` output and ensure the installed version is the desired one.
+> The version to be downloaded can be specified with the parameter `repoVersion`. 
 
 ```yaml
 - name: Test staging repo
@@ -40,6 +41,7 @@ Test packages uploaded to the staging repos:
 
 The following inputs can be specified to override the default behavior
 
+* `repoVersion`: Version to be downloaded from the repo, by default will be the latest (v is stripped automatically if found). This parameter will be ignored if packageLocation is `local`. 
 * `upgrade`: Whether to test upgrade path against the version of the same integration in the newrelic repo
   - default: `true`
 * `postInstallExtra`: Extra checks to run in addition to the default post-install script. This is specified as a multi-line shell script, which is run line-by-line in different containers. A non-zero exit code for any line causes the installation check to fail.

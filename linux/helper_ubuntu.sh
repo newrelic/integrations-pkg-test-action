@@ -36,5 +36,9 @@ install_local() {
 
 # Install package from repository
 install_repo() {
-    apt install -y "$INTEGRATION"
+    version=""
+    if [ "$REPO_VERSION" != "" ]; then
+        version="=$REPO_VERSION"
+    fi
+    apt install -y "${INTEGRATION}${version}"
 }
