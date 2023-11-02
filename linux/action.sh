@@ -17,8 +17,8 @@ REPO_VERSION=${REPO_VERSION/v/}
 if [[ -z $POST_INSTALL ]]; then
     POST_INSTALL="
     test -e /etc/newrelic-infra/integrations.d/${INTEGRATION/nri-/}-config.yml.sample
-    test -x /opt/newrelic-infra/newrelic-integrations/bin/${INTEGRATION}
-    /opt/newrelic-infra/newrelic-integrations/bin/${INTEGRATION} -show_version 2>&1 | grep -e $TAG
+    test -x /opt/newrelic-infra/newrelic-integrations/bin/${INTEGRATION} || test -x /var/db/newrelic-infra/newrelic-integrations/bin/${INTEGRATION} 
+    { /opt/newrelic-infra/newrelic-integrations/bin/${INTEGRATION} -show_version 2>&1 || /var/db/newrelic-infra/newrelic-integrations/bin/${INTEGRATION} -show_version 2>&1 ; } | grep -e $TAG
     "
 fi
 POST_INSTALL="$POST_INSTALL
