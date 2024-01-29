@@ -4,6 +4,7 @@ $TAG = if ($env:tag) {"$env:tag"} else {"v0.0.0"};
 $UPGRADE = if ($env:upgrade) {"$env:upgrade"} else {"false"}; # upgrade: upgrade msi from last released version.
 $PKG_TYPE = if ($env:pkgType) {"$env:pkgType"} else {"msi"};
 $PKG_DIR = "$env:pkgDir"
+$PKG_DIR_BASE = "$env:pkgDirBase"
 $PKG_NAME = "$env:pkgName"
 $PKG_UPSTREAM_URL_BASE = "$env:pkgUpstreamBaseURL"
 $PKG_UPSTREAM_NAME = "$env:pkgLatestName"
@@ -33,7 +34,14 @@ if ($PKG_UPSTREAM_NAME -eq "")
 
 if ($PKG_UPSTREAM_URL_BASE -eq "")
 {
-    $PKG_UPSTREAM_URL_BASE = "http://nr-downloads-main.s3-website-us-east-1.amazonaws.com/infrastructure_agent/windows/integrations/${INTEGRATION}/"
+    $url_base = "http://nr-downloads-main.s3-website-us-east-1.amazonaws.com/infrastructure_agent/windows"
+
+    if ($ARCH -eq "386")
+    {
+        $url_base = "${url_base}/386"
+    }
+
+    $PKG_UPSTREAM_URL_BASE = "${url_base}/integrations/${INTEGRATION}/"
 }
 
 $PKG_UPSTREAM_URL = "${PKG_UPSTREAM_URL_BASE}${PKG_UPSTREAM_NAME}"
@@ -71,19 +79,26 @@ if ($UPGRADE -eq "true")
     echo "✅ Installation for ${PKG_UPSTREAM_NAME} succeeded"
 }
 
-$version = "$TAG" -replace "v", ""
+
+if ($PKG_DIR_BASE -eq "")
+{
+    $PKG_DIR_BASE = "src\github.com\newrelic\${INTEGRATION}\build\package\windows"
+}
+
 if ($PKG_DIR -eq "")
 {
     # Default path also differs depending on the package type
     if ($PKG_TYPE -eq "msi")
     {
-        $PKG_DIR = "src\github.com\newrelic\${INTEGRATION}\build\package\windows\nri-${ARCH}-installer\bin\Release"
+        $PKG_DIR = "${PKG_DIR_BASE}\nri-${ARCH}-installer\bin\Release"
     }
     elseif ($PKG_TYPE -eq "exe")
     {
-        $PKG_DIR = "src\github.com\newrelic\${INTEGRATION}\build\package\windows\bundle\bin\Release"
+        $PKG_DIR = "${PKG_DIR_BASE}\bundle\bin\Release"
     }
 }
+
+$version = "$TAG" -replace "v", ""
 if ($PKG_NAME -eq "")
 {
     if ($PKG_TYPE -eq "msi")
