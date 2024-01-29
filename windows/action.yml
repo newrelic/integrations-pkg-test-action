@@ -29,6 +29,10 @@ inputs:
     description: 'Folder containing installer packages'
     required: false
     default: ""
+  pkgDirBase:
+    description: 'Base dir for default pkgDir. default: "src\github.com\newrelic\${INTEGRATION}\build\package\windows"'
+    required: false
+    default: ""
   pkgName:
     description: 'Installer file name'
     required: false
@@ -52,6 +56,7 @@ runs:
         $Env:upgrade="${{ inputs.upgrade }}"
         $Env:pkgType="${{ inputs.pkgType }}"
         $Env:pkgDir="${{ inputs.pkgDir }}"
+        $Env:pkgDirBase="${{ inputs.pkgDirBase }}"
         $Env:pkgName="${{ inputs.pkgName }}"
         $Env:pkgUpstreamBaseURL="${{ inputs.pkgUpstreamBaseURL }}"
         $Env:pkgLatestName="${{ inputs.pkgLatestName }}"
