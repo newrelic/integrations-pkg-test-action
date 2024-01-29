@@ -30,7 +30,7 @@ inputs:
     required: false
     default: ""
   pkgDirBase:
-    description: 'Base dir for default pkgDir'
+    description: 'Base dir for default pkgDir. default: "src\github.com\newrelic\${INTEGRATION}\build\package\windows"'
     required: false
     default: ""
   pkgName:
