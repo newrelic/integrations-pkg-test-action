@@ -25,7 +25,7 @@ install_agent() {
     # apt install -y newrelic-infra
 
     AGENT_PACKAGE=${AGENT_PACKAGE:-newrelic-infra_systemd_1.15.2_systemd_amd64.deb}
-    wget -nv "http://nr-downloads-main.s3-website-us-east-1.amazonaws.com/${DEST_PREFIX}linux/apt/pool/main/n/newrelic-infra/${AGENT_PACKAGE}"
+    wget -nv "http://nr-downloads-main.s3-website-us-east-1.amazonaws.com/infrastructure_agent/linux/apt/pool/main/n/newrelic-infra/${AGENT_PACKAGE}"
     apt install "./${AGENT_PACKAGE}"
 }
 
