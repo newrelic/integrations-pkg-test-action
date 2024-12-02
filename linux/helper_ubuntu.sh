@@ -9,13 +9,13 @@ add_repo() {
 
     apt update && apt -y install wget gnupg
     if [ "$STAGING_REPO" = "true" ]; then
-        repo="http://nr-downloads-ohai-staging.s3-website-us-east-1.amazonaws.com/$DEST_PREFIX/linux/apt"
+        repo="http://nr-downloads-ohai-staging.s3-website-us-east-1.amazonaws.com/${DEST_PREFIX}linux/apt"
     else
-        repo="http://nr-downloads-main.s3-website-us-east-1.amazonaws.com/$DEST_PREFIX/linux/apt"
+        repo="http://nr-downloads-main.s3-website-us-east-1.amazonaws.com/${DEST_PREFIX}linux/apt"
     fi
 
     echo "deb [arch=amd64] $repo $version main" > /etc/apt/sources.list.d/newrelic-infra.list
-    wget -nv -O- http://nr-downloads-main.s3-website-us-east-1.amazonaws.com/$DEST_PREFIX/gpg/newrelic-infra.gpg | apt-key add -
+    wget -nv -O- http://nr-downloads-main.s3-website-us-east-1.amazonaws.com/${DEST_PREFIX}gpg/newrelic-infra.gpg | apt-key add -
     apt update
 }
 
@@ -25,7 +25,7 @@ install_agent() {
     # apt install -y newrelic-infra
 
     AGENT_PACKAGE=${AGENT_PACKAGE:-newrelic-infra_systemd_1.15.2_systemd_amd64.deb}
-    wget -nv "http://nr-downloads-main.s3-website-us-east-1.amazonaws.com/$DEST_PREFIX/linux/apt/pool/main/n/newrelic-infra/${AGENT_PACKAGE}"
+    wget -nv "http://nr-downloads-main.s3-website-us-east-1.amazonaws.com/${DEST_PREFIX}linux/apt/pool/main/n/newrelic-infra/${AGENT_PACKAGE}"
     apt install "./${AGENT_PACKAGE}"
 }
 

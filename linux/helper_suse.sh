@@ -27,20 +27,20 @@ add_repo() {
         zypper --gpg-auto-import-keys ref
     fi
     zypper -n install wget
-    wget -q "http://${domain}/$DEST_PREFIX/gpg/newrelic-infra.gpg" -O newrelic-infra.gpg
+    wget -q "http://${domain}/${DEST_PREFIX}gpg/newrelic-infra.gpg" -O newrelic-infra.gpg
     rpm --import newrelic-infra.gpg && rm newrelic-infra.gpg
 
     cp "newrelic-infra-suse${env}.repo" tmp.repo
     sed -e "s/__VERSION__/$VERSION_ID/g" tmp.repo > /etc/zypp/repos.d/newrelic-infra.repo
     if [ "$STAGING_REPO" = "true" ]; then 
-        if [ "$DEST_PREFIX" != "infrastructure_agent"]; then
-            sed -i "s|baseurl=http://nr-downloads-ohai-staging\.s3-website-us-east-1\.amazonaws\.com/infrastructure_agent/linux/zypp/sles/__VERSION__/x86_64|baseurl=http://nr-downloads-ohai-staging.s3-website-us-east-1.amazonaws.com/${DEST_PREFIX}/linux/zypp/sles/__VERSION__/x86_64|" /etc/zypp/repos.d/newrelic-infra.repo
-            sed -i "s|gpgkey=http://download\.newrelic\.com/infrastructure_agent/gpg/newrelic-infra\.gpg|gpgkey=http://download.newrelic.com/${DEST_PREFIX}/gpg/newrelic-infra.gpg|" /etc/zypp/repos.d/newrelic-infra.repo
+        if [ "$DEST_PREFIX" != "infrastructure_agent/"]; then
+            sed -i "s|baseurl=http://nr-downloads-ohai-staging\.s3-website-us-east-1\.amazonaws\.com/infrastructure_agent/linux/zypp/sles/__VERSION__/x86_64|baseurl=http://nr-downloads-ohai-staging.s3-website-us-east-1.amazonaws.com/${DEST_PREFIX}linux/zypp/sles/__VERSION__/x86_64|" /etc/zypp/repos.d/newrelic-infra.repo
+            sed -i "s|gpgkey=http://download\.newrelic\.com/infrastructure_agent/gpg/newrelic-infra\.gpg|gpgkey=http://download.newrelic.com/${DEST_PREFIX}gpg/newrelic-infra.gpg|" /etc/zypp/repos.d/newrelic-infra.repo
         fi
     else
-        if [ "$DEST_PREFIX" != "infrastructure_agent"]; then
-            sed -i "s|baseurl=http://nr-downloads-main\.s3-website-us-east-1\.amazonaws\.com/infrastructure_agent/linux/zypp/sles/__VERSION__/x86_64|baseurl=http://nr-downloads-main.s3-website-us-east-1.amazonaws.com/${DEST_PREFIX}/linux/zypp/sles/__VERSION__/x86_64|" /etc/zypp/repos.d/newrelic-infra.repo
-            sed -i "s|gpgkey=http://nr-downloads-main\.s3-website-us-east-1\.amazonaws\.com/infrastructure_agent/gpg/newrelic-infra.gpg|gpgkey=http://nr-downloads-main.s3-website-us-east-1.amazonaws.com/${DEST_PREFIX}/gpg/newrelic-infra.gpg|" /etc/zypp/repos.d/newrelic-infra.repo
+        if [ "$DEST_PREFIX" != "infrastructure_agent/"]; then
+            sed -i "s|baseurl=http://nr-downloads-main\.s3-website-us-east-1\.amazonaws\.com/infrastructure_agent/linux/zypp/sles/__VERSION__/x86_64|baseurl=http://nr-downloads-main.s3-website-us-east-1.amazonaws.com/${DEST_PREFIX}linux/zypp/sles/__VERSION__/x86_64|" /etc/zypp/repos.d/newrelic-infra.repo
+            sed -i "s|gpgkey=http://nr-downloads-main\.s3-website-us-east-1\.amazonaws\.com/infrastructure_agent/gpg/newrelic-infra.gpg|gpgkey=http://nr-downloads-main.s3-website-us-east-1.amazonaws.com/${DEST_PREFIX}gpg/newrelic-infra.gpg|" /etc/zypp/repos.d/newrelic-infra.repo
         fi
     fi
     zypper --gpg-auto-import-keys ref

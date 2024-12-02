@@ -44,7 +44,7 @@ inputs:
   destPrefix:
     description: 'Prefix of the destination s3 path for downloading the artifacts'
     required: false
-    default: "infrastructure_agent"
+    default: "infrastructure_agent/"
 
 runs:
   using: "composite"
