@@ -15,7 +15,7 @@ add_repo() {
     fi
 
     echo "deb [arch=amd64] $repo $version main" > /etc/apt/sources.list.d/newrelic-infra.list
-    wget -nv -O- http://nr-downloads-main.s3-website-us-east-1.amazonaws.com/${DEST_PREFIX}gpg/newrelic-infra.gpg | apt-key add -
+    wget -nv -O- http://nr-downloads-main.s3-website-us-east-1.amazonaws.com/infrastructure_agent/gpg/newrelic-infra.gpg | apt-key add -
     apt update
 }
 
