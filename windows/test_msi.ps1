@@ -9,6 +9,7 @@ $PKG_NAME = "$env:pkgName"
 $PKG_UPSTREAM_URL_BASE = "$env:pkgUpstreamBaseURL"
 $PKG_UPSTREAM_NAME = "$env:pkgLatestName"
 $REPO_VERSION = "$env:repoVersion"
+$DEST_PREFIX = "$env:destPrefix"
 
 if ($PKG_TYPE -NotMatch "msi" -And $PKG_TYPE -NotMatch "exe") {
     echo "❌ PKG_TYPE can only be 'msi' or 'exe'"
@@ -34,7 +35,7 @@ if ($PKG_UPSTREAM_NAME -eq "")
 
 if ($PKG_UPSTREAM_URL_BASE -eq "")
 {
-    $url_base = "http://nr-downloads-main.s3-website-us-east-1.amazonaws.com/infrastructure_agent/windows"
+    $url_base = "http://nr-downloads-main.s3-website-us-east-1.amazonaws.com/${DEST_PREFIX}/windows"
 
     if ($ARCH -eq "386")
     {

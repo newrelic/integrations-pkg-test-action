@@ -45,6 +45,10 @@ inputs:
     description: 'Path to the upstream URL of the package. Will be concatenated with pkgUpstreamName to get the full URL'
     required: false
     default: ""
+  destPrefix:
+    description: 'Prefix of the destination s3 path for downloading the artifacts'
+    required: false
+    default: "infrastructure_agent"
 
 runs:
   using: "composite"
@@ -61,6 +65,7 @@ runs:
         $Env:pkgUpstreamBaseURL="${{ inputs.pkgUpstreamBaseURL }}"
         $Env:pkgLatestName="${{ inputs.pkgLatestName }}"
         $Env:repoVersion="${{ inputs.repoVersion }}"
+        $Env:destPrefix="${{ inputs.destPrefix }}"
         
         ${{ github.action_path }}\test_msi.ps1
       shell: pwsh
