@@ -41,6 +41,10 @@ inputs:
     description: 'Folder containing installer packages'
     required: false
     default: ""
+  destPrefix:
+    description: 'Prefix of the destination s3 path for downloading the artifacts'
+    required: false
+    default: "infrastructure_agent"
 
 runs:
   using: "composite"
@@ -58,3 +62,4 @@ runs:
         POST_INSTALL_EXTRA: ${{ inputs.postInstallExtra }}
         DISTROS: ${{ inputs.distros }}
         PKGDIR: ${{ inputs.pkgDir }}
+        DEST_PREFIX: ${{ inputs.destPrefix }}
