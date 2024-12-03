@@ -142,6 +142,11 @@ function build_and_test() {
         while read -r check; do
             [[ -n $check ]] || continue # Skip empty lines
             # Feed each check to a fresh instance of the docker container
+            # List the contents of the directory
+            echo "Listing contents of /opt/newrelic-infra/newrelic-integrations/bin/:"
+            ls /opt/newrelic-infra/newrelic-integrations/bin/
+            echo "Listing contents of /var/db/newrelic-infra/newrelic-integrations/bin/:"
+            ls /var/db/newrelic-infra/newrelic-integrations/bin/
             if ! (echo "$check" | docker run --rm -i "$dockertag"); then
                 echo "  ❌ $check"
                 failed=1
