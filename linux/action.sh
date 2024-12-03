@@ -144,10 +144,14 @@ function build_and_test() {
             # Feed each check to a fresh instance of the docker container
             # List the contents of the directory
             echo "Listing contents of /opt/newrelic-infra/newrelic-integrations/bin/:"
+            echo "This is the pwd:"
             pwd
+            echo "Files in current dir:"
             ls
+            echo "Files in /opt:"
             ls /opt
             echo "Listing contents of /var/db/newrelic-infra/newrelic-integrations/bin/:"
+            echo "Files in /var:"
             ls /var
             if ! (echo "$check" | docker run --rm -i "$dockertag"); then
                 echo "  ❌ $check"
