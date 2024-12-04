@@ -10,7 +10,7 @@ add_repo() {
     apt update && apt -y install wget gnupg
     if [ "$STAGING_REPO" = "true" ]; then
         echo "staginRepo is true"
-        if [ "$DEST_PREFIX" != "infrastructure_agent/"]; then
+        if [ "$DEST_PREFIX" -ne "infrastructure_agent/"]; then
             echo "destPrefix is not infrastructure_agent/ it is $DEST_PREFIX"
             repo="http://nr-downloads-ohai-staging.s3-website-us-east-1.amazonaws.com/${DEST_PREFIX}linux/apt"
         else
