@@ -56,6 +56,8 @@ The following inputs can be specified to override the default behavior
   - default: `false`
 * `pkgDir`: Path where archives (.deb and .rpm) reside
   - default: `./dist`
+* `destPrefix`: Prefix of the destination s3 path for downloading the artifacts
+  - default: `infrastructure_agent/`
 
 ##### Supported `distros`
 

@@ -8,6 +8,7 @@ set -o pipefail
 [[ -n $DISTROS ]] || DISTROS="ubuntu:jammy ubuntu:focal ubuntu:bionic debian:bullseye debian:buster rockylinux:8 registry.suse.com/suse/sles12sp5:latest suse"
 [[ -n $PKGDIR ]] || PKGDIR="./dist"
 [[ -n $PACKAGE_LOCATION ]] || PACKAGE_LOCATION="local"
+[[ -n $DEST_PREFIX ]] || DEST_PREFIX="infrastructure_agent/"
 
 # Strip leading v from TAG and REPO_VERSION if present
 TAG=${TAG/v/}
@@ -125,6 +126,7 @@ function build_and_test() {
         --build-arg INSTALL_LOCAL="$install_local" \
         --build-arg FAIL_REPO="$fail_repo" \
         --build-arg STAGING_REPO="$STAGING_REPO" \
+        --build-arg DEST_PREFIX="$DEST_PREFIX" \
         "$dockerdir"; then
         echo "::endgroup::"
         echo "❌ Install for $dockertag failed"
