@@ -9,9 +9,13 @@ add_repo() {
 
     apt update && apt -y install wget gnupg
     if [ "$STAGING_REPO" = "true" ]; then
-        repo="http://nr-downloads-ohai-staging.s3-website-us-east-1.amazonaws.com/infrastructure_agent/linux/apt"
+        if [ "$DEST_PREFIX" != "infrastructure_agent/"]; then
+            repo="http://nr-downloads-ohai-staging.s3-website-us-east-1.amazonaws.com/${DEST_PREFIX}/linux/apt"
+        else
+            repo="http://nr-downloads-ohai-staging.s3-website-us-east-1.amazonaws.com/infrastructure_agent/linux/apt"
+        fi
     else
-        repo="http://nr-downloads-main.s3-website-us-east-1.amazonaws.com/${DEST_PREFIX}linux/apt"
+        repo="http://nr-downloads-main.s3-website-us-east-1.amazonaws.com/infrastructure_agent/linux/apt"
     fi
 
     echo "deb [arch=amd64] $repo $version main" > /etc/apt/sources.list.d/newrelic-infra.list
