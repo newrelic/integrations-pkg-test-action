@@ -24,7 +24,7 @@ install_agent() {
     # TODO: Use the repo version when the staging repo gets fixed, since the systemd issue is workarounded
     # apt install -y newrelic-infra
 
-    AGENT_PACKAGE=${AGENT_PACKAGE:-newrelic-infra_systemd_1.58.0_systemd_amd64.deb}
+    AGENT_PACKAGE=${AGENT_PACKAGE:-newrelic-infra_systemd_1.58.0_amd64.deb}
     wget -nv "http://nr-downloads-main.s3-website-us-east-1.amazonaws.com/infrastructure_agent/linux/apt/pool/main/n/newrelic-infra/${AGENT_PACKAGE}"
     apt install "./${AGENT_PACKAGE}"
 }
