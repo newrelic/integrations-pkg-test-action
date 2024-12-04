@@ -9,12 +9,16 @@ add_repo() {
 
     apt update && apt -y install wget gnupg
     if [ "$STAGING_REPO" = "true" ]; then
+        echo "staginRepo is true"
         if [ "$DEST_PREFIX" != "infrastructure_agent/"]; then
-            repo="http://nr-downloads-ohai-staging.s3-website-us-east-1.amazonaws.com/${DEST_PREFIX}/linux/apt"
+            echo "destPrefix is not infrastructure_agent/ it is $DEST_PREFIX"
+            repo="http://nr-downloads-ohai-staging.s3-website-us-east-1.amazonaws.com/${DEST_PREFIX}linux/apt"
         else
+            echo "destPrefix is $DEST_PREFIX"
             repo="http://nr-downloads-ohai-staging.s3-website-us-east-1.amazonaws.com/infrastructure_agent/linux/apt"
         fi
     else
+        echo "staginRepo is false"
         repo="http://nr-downloads-main.s3-website-us-east-1.amazonaws.com/infrastructure_agent/linux/apt"
     fi
 
@@ -28,11 +32,7 @@ install_agent() {
     # TODO: Use the repo version when the staging repo gets fixed, since the systemd issue is workarounded
     # apt install -y newrelic-infra
 
-    FLUENT_AGENT_PACKAGE=${FLUENT_AGENT_PACKAGE:-fluent-bit_2.0.8_ubuntu-jammy_amd64.deb}
-    wget -nv "http://nr-downloads-main.s3-website-us-east-1.amazonaws.com/infrastructure_agent/linux/apt/pool/main/f/fluent-bit/${FLUENT_AGENT_PACKAGE}"
-    apt install "./${FLUENT_AGENT_PACKAGE}"
-
-    AGENT_PACKAGE=${AGENT_PACKAGE:-newrelic-infra_systemd_1.58.0_amd64.deb}
+    AGENT_PACKAGE=${AGENT_PACKAGE:-newrelic-infra_systemd_1.15.2_systemd_amd64.deb}
     wget -nv "http://nr-downloads-main.s3-website-us-east-1.amazonaws.com/infrastructure_agent/linux/apt/pool/main/n/newrelic-infra/${AGENT_PACKAGE}"
     apt install "./${AGENT_PACKAGE}"
 }
