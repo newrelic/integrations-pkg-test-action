@@ -7,6 +7,9 @@ on:
       - main
   pull_request:
 
+permissions:
+  contents: read
+
 # ATTENTION
 # This is a self-test pipeline and it is *NOT* intended to be used as a base/quickstart on how to
 # use the action. Please refer to the examples in the README.md file for that
