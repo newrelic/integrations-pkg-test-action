@@ -12,6 +12,8 @@ COPY helper*.sh rpm-repos/*.repo ./
 ARG STAGING_REPO=false
 ENV STAGING_REPO=$STAGING_REPO
 
+ARG DEST_PREFIX
+
 # Run helper prepare. This adds the NR repo and installs the agent
 RUN ./helper.sh prepare
 
@@ -41,4 +43,5 @@ RUN INTEGRATION=$INTEGRATION \
     INSTALL_REPO=$INSTALL_REPO \
     FAIL_REPO=$FAIL_REPO \
     INSTALL_LOCAL=$INSTALL_LOCAL \
+    DEST_PREFIX=$DEST_PREFIX \
     ./helper.sh install
