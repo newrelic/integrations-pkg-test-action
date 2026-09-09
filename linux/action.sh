@@ -5,7 +5,8 @@ set -o pipefail
 
 # Populate defaults
 [[ -n $GITHUB_ACTION_PATH ]] || GITHUB_ACTION_PATH=$(pwd)
-[[ -n $DISTROS ]] || DISTROS="ubuntu:jammy ubuntu:focal ubuntu:bionic debian:bookworm debian:trixie rockylinux:8 registry.suse.com/suse/sles12sp5:latest suse"
+# TODO: https://new-relic.atlassian.net/browse/NR-616220
+[[ -n $DISTROS ]] || DISTROS="ubuntu:jammy ubuntu:focal ubuntu:bionic debian:bookworm rockylinux:8 registry.suse.com/suse/sles12sp5:latest suse"
 [[ -n $PKGDIR ]] || PKGDIR="./dist"
 [[ -n $PACKAGE_LOCATION ]] || PACKAGE_LOCATION="local"
 
