@@ -14,8 +14,11 @@ add_repo() {
         repo="http://nr-downloads-main.s3-website-us-east-1.amazonaws.com/infrastructure_agent/linux/apt"
     fi
 
-    echo "deb [arch=amd64] $repo $version main" > /etc/apt/sources.list.d/newrelic-infra.list
-    wget -nv -O- http://nr-downloads-main.s3-website-us-east-1.amazonaws.com/infrastructure_agent/gpg/newrelic-infra.gpg | apt-key add -
+    # Production GPG key with SHA-256 signing:
+    #http://nr-downloads-main.s3-website-us-east-1.amazonaws.com/infrastructure_agent/gpg/newrelic-infra-sha256.gpg
+    mkdir -p /etc/apt/keyrings
+    wget -nv -O- http://nr-downloads-main.s3-website-us-east-1.amazonaws.com/infrastructure_agent/gpg/newrelic-infra-sha256.gpg | gpg --dearmor -o /etc/apt/keyrings/newrelic-infra.gpg
+    echo "deb [arch=amd64 signed-by=/etc/apt/keyrings/newrelic-infra.gpg] $repo $version main" > /etc/apt/sources.list.d/newrelic-infra.list
     apt update
 }
 
