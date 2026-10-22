@@ -9,13 +9,13 @@ add_repo() {
 
     # os-release file should have this structure:
     #   NAME="SLES"
-    #   VERSION="15-SP3"
-    #   VERSION_ID="15.3"
-    #   PRETTY_NAME="SUSE Linux Enterprise Server 15 SP3"
+    #   VERSION="15-SP7"
+    #   VERSION_ID="15.7"
+    #   PRETTY_NAME="SUSE Linux Enterprise Server 15 SP7"
     #   ID="sles"
     #   ID_LIKE="suse"
     #   ANSI_COLOR="0;32"
-    #   CPE_NAME="cpe:/o:suse:sles:15:sp3"
+    #   CPE_NAME="cpe:/o:suse:sles:15:sp7"
     #   DOCUMENTATION_URL="https://documentation.suse.com/"
     . /etc/os-release
     printf "Detected version '%s' from os-release" "$VERSION_ID"

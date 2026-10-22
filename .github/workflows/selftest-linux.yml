@@ -89,7 +89,7 @@ jobs:
     name: Remote linux self-test on specific staging Repo
     strategy:
       matrix:
-        distro: [ "ubuntu:jammy", "debian:bookworm", "registry.suse.com/suse/sle15:15.3" ]
+        distro: [ "ubuntu:jammy", "debian:bookworm", "registry.suse.com/suse/sle15:15.7" ]
     steps:
       - uses: actions/checkout@v2
       - name: Test staging package on ${{ matrix.distro }}
@@ -113,7 +113,7 @@ jobs:
     name: Remote linux self-test on specific prod Repo
     strategy:
       matrix:
-        distro: [ "ubuntu:jammy", "debian:bookworm", "registry.suse.com/suse/sle15:15.3" ]
+        distro: [ "ubuntu:jammy", "debian:bookworm", "registry.suse.com/suse/sle15:15.7" ]
     steps:
       - uses: actions/checkout@v2
       - name: Test staging package on ${{ matrix.distro }}

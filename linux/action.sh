@@ -36,7 +36,7 @@ function qualify_distro() {
         printf "ubuntu:jammy"
         ;;
     "suse")
-        printf "registry.suse.com/suse/sle15:15.3"
+        printf "registry.suse.com/suse/sle15:15.7"
         ;;
     "rockylinux")
         printf "rockylinux:8"
