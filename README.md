@@ -54,6 +54,7 @@ The following inputs can be specified to override the default behavior
   - default: `local`
 * `stagingRepo`: Pull repo packages from the staging repo rather than production. Useful for testing staging repo packages alone (rather than local).
   - default: `false`
+* `repoPrefix`: Key prefix of the repos in the bucket, with or without trailing slash. Defaults to `infrastructure_agent`. Set it (e.g. `infrastructure_agent_v2`) when the packages are published under a different prefix; it applies to the apt, yum and zypp repos and their GPG keys, not to the infra agent package downloaded for the test.
 * `pkgDir`: Path where archives (.deb and .rpm) reside
   - default: `./dist`
 

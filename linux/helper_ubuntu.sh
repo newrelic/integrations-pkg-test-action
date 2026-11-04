@@ -7,15 +7,16 @@ add_repo() {
         return 1
     fi
 
+    prefix=${REPO_PREFIX:-infrastructure_agent}
     apt update && apt -y install wget gnupg
     if [ "$STAGING_REPO" = "true" ]; then
-        repo="http://nr-downloads-ohai-staging.s3-website-us-east-1.amazonaws.com/infrastructure_agent/linux/apt"
+        repo="http://nr-downloads-ohai-staging.s3-website-us-east-1.amazonaws.com/${prefix}/linux/apt"
     else
-        repo="http://nr-downloads-main.s3-website-us-east-1.amazonaws.com/infrastructure_agent/linux/apt"
+        repo="http://nr-downloads-main.s3-website-us-east-1.amazonaws.com/${prefix}/linux/apt"
     fi
 
     mkdir -p /etc/apt/keyrings
-    wget -nv -O- http://nr-downloads-main.s3-website-us-east-1.amazonaws.com/infrastructure_agent/gpg/newrelic-infra-sha256.gpg | gpg --dearmor -o /etc/apt/keyrings/newrelic-infra.gpg
+    wget -nv -O- "http://nr-downloads-main.s3-website-us-east-1.amazonaws.com/${prefix}/gpg/newrelic-infra-sha256.gpg" | gpg --dearmor -o /etc/apt/keyrings/newrelic-infra.gpg
     echo "deb [arch=amd64 signed-by=/etc/apt/keyrings/newrelic-infra.gpg] $repo $version main" > /etc/apt/sources.list.d/newrelic-infra.list
     apt update
 }

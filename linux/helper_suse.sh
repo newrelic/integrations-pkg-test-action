@@ -2,6 +2,7 @@
 add_repo() {
     domain="nr-downloads-main.s3-website-us-east-1.amazonaws.com"
     env=""
+    prefix=${REPO_PREFIX:-infrastructure_agent}
     if [ "$STAGING_REPO" = "true" ]; then
         domain="nr-downloads-ohai-staging.s3-website-us-east-1.amazonaws.com"
         env="-staging"
@@ -27,11 +28,11 @@ add_repo() {
         zypper --gpg-auto-import-keys ref
     fi
     zypper -n install wget
-    wget -q "http://${domain}/infrastructure_agent/gpg/newrelic-infra.gpg" -O newrelic-infra.gpg
+    wget -q "http://${domain}/${prefix}/gpg/newrelic-infra.gpg" -O newrelic-infra.gpg
     rpm --import newrelic-infra.gpg && rm newrelic-infra.gpg
 
     cp "newrelic-infra-suse${env}.repo" tmp.repo
-    sed -e "s/__VERSION__/$VERSION_ID/g" tmp.repo > /etc/zypp/repos.d/newrelic-infra.repo
+    sed -e "s/__VERSION__/$VERSION_ID/g" -e "s#__PREFIX__#${prefix}#g" tmp.repo > /etc/zypp/repos.d/newrelic-infra.repo
     zypper --gpg-auto-import-keys ref
 }
 

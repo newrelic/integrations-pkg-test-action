@@ -8,7 +8,7 @@ add_repo() {
 
     # Get rockylinux version from docker tag, assuming it has a `:[0-9]` format
     version=${BASE_IMAGE##*:}
-    sed -i "s/__VERSION__/$version/" /etc/yum.repos.d/newrelic-infra.repo
+    sed -i -e "s/__VERSION__/$version/" -e "s#__PREFIX__#${REPO_PREFIX:-infrastructure_agent}#g" /etc/yum.repos.d/newrelic-infra.repo
 
     dnf clean all && rm -r /var/cache/dnf  && dnf upgrade -y && dnf update -y
     yum -q makecache -y --disablerepo='*' --enablerepo='newrelic-infra'
