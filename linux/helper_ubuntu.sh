@@ -18,6 +18,10 @@ add_repo() {
     mkdir -p /etc/apt/keyrings
     wget -nv -O- "http://nr-downloads-main.s3-website-us-east-1.amazonaws.com/infrastructure_agent/gpg/newrelic-infra-sha256.gpg" | gpg --dearmor -o /etc/apt/keyrings/newrelic-infra.gpg
     echo "deb [arch=amd64 signed-by=/etc/apt/keyrings/newrelic-infra.gpg] $repo $version main" > /etc/apt/sources.list.d/newrelic-infra.list
+    # A custom prefix only holds the published integrations: the agent they depend on comes from the default repo
+    if [ "$prefix" != "infrastructure_agent" ]; then
+        echo "deb [arch=amd64 signed-by=/etc/apt/keyrings/newrelic-infra.gpg] http://nr-downloads-main.s3-website-us-east-1.amazonaws.com/infrastructure_agent/linux/apt $version main" > /etc/apt/sources.list.d/newrelic-infra-agent.list
+    fi
     apt update
 }
 
@@ -26,7 +30,12 @@ install_agent() {
     # TODO: Use the repo version when the staging repo gets fixed, since the systemd issue is workarounded
     # apt install -y newrelic-infra
 
-    AGENT_PACKAGE=${AGENT_PACKAGE:-newrelic-infra_systemd_1.15.2_systemd_amd64.deb}
+    # Integrations published under a custom prefix need a recent agent, the pinned one is too old for them
+    default_agent=newrelic-infra_systemd_1.15.2_systemd_amd64.deb
+    if [ "${REPO_PREFIX:-infrastructure_agent}" != "infrastructure_agent" ]; then
+        default_agent=newrelic-infra_systemd_1.27.1_amd64.deb
+    fi
+    AGENT_PACKAGE=${AGENT_PACKAGE:-$default_agent}
     wget -nv "http://nr-downloads-main.s3-website-us-east-1.amazonaws.com/infrastructure_agent/linux/apt/pool/main/n/newrelic-infra/${AGENT_PACKAGE}"
     apt install "./${AGENT_PACKAGE}"
 }

@@ -33,6 +33,11 @@ add_repo() {
 
     cp "newrelic-infra-suse${env}.repo" tmp.repo
     sed -e "s/__VERSION__/$VERSION_ID/g" -e "s#__PREFIX__#${prefix}#g" tmp.repo > /etc/zypp/repos.d/newrelic-infra.repo
+    # A custom prefix only holds the published integrations: the agent they depend on comes from the default repo
+    if [ "$prefix" != "infrastructure_agent" ]; then
+        sed -e "s/__VERSION__/$VERSION_ID/g" -e "s#__PREFIX__#infrastructure_agent#g" -e "s/^\[newrelic-infra\]/[newrelic-infra-agent]/" \
+            "newrelic-infra-suse.repo" > /etc/zypp/repos.d/newrelic-infra-agent.repo
+    fi
     zypper --gpg-auto-import-keys ref
 }
 
