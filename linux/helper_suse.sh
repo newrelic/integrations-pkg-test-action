@@ -28,7 +28,7 @@ add_repo() {
         zypper --gpg-auto-import-keys ref
     fi
     zypper -n install wget
-    wget -q "http://${domain}/${prefix}/gpg/newrelic-infra.gpg" -O newrelic-infra.gpg
+    wget -q "http://${domain}/infrastructure_agent/gpg/newrelic-infra.gpg" -O newrelic-infra.gpg
     rpm --import newrelic-infra.gpg && rm newrelic-infra.gpg
 
     cp "newrelic-infra-suse${env}.repo" tmp.repo

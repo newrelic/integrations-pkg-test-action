@@ -22,7 +22,7 @@ inputs:
     required: false
     default: 'false'
   repoPrefix:
-    description: 'Key prefix of the repos in the bucket, with or without trailing slash (e.g. infrastructure_agent_v2). Applies to the apt, yum and zypp repos and their GPG keys.'
+    description: 'Key prefix of the repos in the bucket, with or without trailing slash (e.g. infrastructure_agent_v2). Applies to the apt, yum and zypp repo URLs; the GPG keys always come from infrastructure_agent/.'
     required: false
     default: 'infrastructure_agent'
   upgrade:
