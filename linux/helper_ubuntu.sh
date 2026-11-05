@@ -30,14 +30,9 @@ install_agent() {
     # TODO: Use the repo version when the staging repo gets fixed, since the systemd issue is workarounded
     # apt install -y newrelic-infra
 
-    # Integrations published under a custom prefix need a recent agent, the pinned one is too old for them
-    default_agent=newrelic-infra_systemd_1.15.2_systemd_amd64.deb
-    if [ "${REPO_PREFIX:-infrastructure_agent}" != "infrastructure_agent" ]; then
-        default_agent=newrelic-infra_systemd_1.27.1_amd64.deb
-    fi
-    AGENT_PACKAGE=${AGENT_PACKAGE:-$default_agent}
+    AGENT_PACKAGE=${AGENT_PACKAGE:-newrelic-infra_systemd_2.0.1_amd64.deb}
     wget -nv "http://nr-downloads-main.s3-website-us-east-1.amazonaws.com/infrastructure_agent/linux/apt/pool/main/n/newrelic-infra/${AGENT_PACKAGE}"
-    apt install "./${AGENT_PACKAGE}"
+    apt install -y "./${AGENT_PACKAGE}"
 }
 
 # Install package from local file
