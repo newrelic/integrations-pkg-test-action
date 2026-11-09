@@ -115,6 +115,10 @@ function build_and_test() {
         done
     fi
 
+    # Accept the prefix with or without trailing slash (e.g. infrastructure_agent_v2/)
+    repo_prefix=${REPO_PREFIX:-infrastructure_agent}
+    repo_prefix=${repo_prefix%/}
+
     echo "ℹ️ Running installation test for $dockertag"
     echo "::group::docker build $dockertag"
     if ! docker build -t "$dockertag" -f "${GITHUB_ACTION_PATH}/Dockerfile" \
@@ -126,6 +130,7 @@ function build_and_test() {
         --build-arg INSTALL_LOCAL="$install_local" \
         --build-arg FAIL_REPO="$fail_repo" \
         --build-arg STAGING_REPO="$STAGING_REPO" \
+        --build-arg REPO_PREFIX="$repo_prefix" \
         "$dockerdir"; then
         echo "::endgroup::"
         echo "❌ Install for $dockertag failed"

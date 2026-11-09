@@ -21,6 +21,10 @@ inputs:
     description: 'Set to "true" to use the staging rather than the prod repo, for both upgrade test and install test.'
     required: false
     default: 'false'
+  repoPrefix:
+    description: 'Key prefix of the repos in the bucket, with or without trailing slash (e.g. infrastructure_agent_v2). Applies to the apt, yum and zypp repo URLs; the GPG keys always come from infrastructure_agent/.'
+    required: false
+    default: 'infrastructure_agent'
   upgrade:
     description: 'Whether to test upgrade path as well'
     required: false
@@ -53,6 +57,7 @@ runs:
         INTEGRATION: ${{ inputs.integration }}
         PACKAGE_LOCATION: ${{ inputs.packageLocation }}
         STAGING_REPO: ${{ inputs.stagingRepo }}
+        REPO_PREFIX: ${{ inputs.repoPrefix }}
         UPGRADE: ${{ inputs.upgrade }}
         POST_INSTALL: ${{ inputs.postInstall }}
         POST_INSTALL_EXTRA: ${{ inputs.postInstallExtra }}
